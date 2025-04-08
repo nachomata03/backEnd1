@@ -22,7 +22,7 @@ class cartManager {
         try {
             const cart = await fs.readFile(this.path, 'utf-8');
             const carts = JSON.parse(cart);
-            const newCart = { id: carts.length === 0 ? 1 : carts[carts.length - 1].id + 1, products: [] };
+            const newCart = { id: carts.length === 0 ? 1 : carts[carts.length - 1].id + 1, products: products }; // si el id = 0 le ponemos 1 sino obtenemos la longitud del array y le sumamos 1
             carts.push(newCart);
             await fs.writeFile(this.path, JSON.stringify(carts, null, 2), 'utf-8');
             console.log(`El carrito con id ${newCart.id} ha sido agregado`);
