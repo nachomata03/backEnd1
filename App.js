@@ -95,7 +95,7 @@ server.post('/api/carts',async (req, res) => {
     }
 })
 
-server.post('/api/carts/:pid/products/:pid',async (req, res) => {
+server.post('/api/carts/:cid/products/:pid',async (req, res) => {
     const producto = req.body
     const id = parseInt(req.params.pid);
     try {

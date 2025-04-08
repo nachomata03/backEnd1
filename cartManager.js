@@ -39,6 +39,16 @@ class cartManager {
             const cart = await fs.readFile(this.path, 'utf-8');
             const carts = JSON.parse(cart);
 
+            const cartIndex = carts.findIndex(cart => cart.id === cartId);
+
+            if (cartIndex === -1) {
+                console.log(`El carrito con el id ${cartId} no existe`);
+                return null;
+            }
+
+            
+
+
             const findProduct = findCart.products.find(producto => producto.id === productId) //buscamos si esta el producto
 
             if(findProduct) return findProduct.quantity = quantity; // si esta el prod sumamos la cantidad
