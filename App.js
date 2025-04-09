@@ -35,7 +35,7 @@ server.post('/api/products', async (req, res) => {
     const prod = req.body
     try {
         const producto = await productosManager.addProduct(prod);
-        res.send({ message: 'El producto se actualizó correctamente', producto: producto })
+        res.send({ message: 'El producto se cargo correctamente', producto: producto })
     } catch (error) {
         console.log(error);
         res.status(500).send({ error: 'Error al agregar el producto' });
@@ -96,11 +96,11 @@ server.post('/api/carts',async (req, res) => {
 })
 
 server.post('/api/carts/:cid/products/:pid',async (req, res) => {
-    const producto = req.body
-    const id = parseInt(req.params.pid);
+    const pid = parseInt(req.params.pid);
+    const cid = parseInt(req.params.cid);
     try {
-        const cart = await cartManager.addCart(producto, id);
-        res.send({ message: 'El carrito se actualizó correctamente', cart: cart })
+        let cart = await cartManager.addProductToCart(cid, pid);
+        cart == null ? res.status(404).send({ error: 'La orden de compra no existe con ese id' }) : res.status(200).send({ message: 'El carrito se actualizó correctamente', cart: cart })
     } catch (error) {
         console.log(error);
         res.status(500).send({ error: 'Error al agregar el carrito' });

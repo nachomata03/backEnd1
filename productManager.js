@@ -108,12 +108,11 @@ class productManager {
         try {
             const producto = await fs.readFile(this.filepath, 'utf-8');
             const productos = JSON.parse(producto);
-            const findProduct = productos.find(producto => producto.id === id);
-
-            if (!findProduct) return console.log(`El producto con el id ${id} no existe`);
-            Object.assign(findProduct, prod);//Usamos Object.assign para copiar las propiedades de produActualizado al objeto productoEncontrado. Esto actualiza el producto en el array productos.
+            const productoactualizado = productos.findIndex(producto => producto.id === id);
+            productos[productoactualizado] = {...productos[productoactualizado], ...prod}
+            
             await fs.writeFile(this.filepath, JSON.stringify(productos, null, 2), 'utf-8');
-            return findProduct;
+            return productos[productoactualizado];
         } catch (error) {
             console.log(error);
             throw error;

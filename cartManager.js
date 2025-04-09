@@ -34,28 +34,27 @@ class cartManager {
         }
     }
 
-    async addProductToCart(productId, quantity , cartId) {
+    async addProductToCart(cartId, productId) {
         try {
-            const cart = await fs.readFile(this.path, 'utf-8');
-            const carts = JSON.parse(cart);
-
-            const cartIndex = carts.findIndex(cart => cart.id === cartId);
-
-            if (cartIndex === -1) {
-                console.log(`El carrito con el id ${cartId} no existe`);
+            const carrito = await fs.readFile(this.path, 'utf-8');
+            const carts = JSON.parse(carrito);
+            const cartIndex = carts.findIndex(cart => cart.id === cartId); // buscamos la orden de compra
+            if (cartIndex === -1){
                 return null;
+            } else{
+                const cart = carts[cartIndex]; // obtenemos la orden de compra
+                const existingProductIndex = cart.products.findIndex(item => item.id === productId); // buscamos el si esta el producto
+    
+                if (existingProductIndex !== -1) {
+                    cart.products[existingProductIndex].quantity++; // si esta el producto le sumamos la cantidad
+                } else {
+                    cart.products.push({ id: productId, quantity: 1 }); // si no lo creamos
+                }
+    
+                await fs.writeFile(this.path, JSON.stringify(carts, null, 2), 'utf-8');
+                return cart;
             }
-
             
-
-
-            const findProduct = findCart.products.find(producto => producto.id === productId) //buscamos si esta el producto
-
-            if(findProduct) return findProduct.quantity = quantity; // si esta el prod sumamos la cantidad
-            findCart.products.push({id: productId, quantity: quantity}); //sino lo creamos
-
-            await fs.writeFile(this.path, JSON.stringify(carts, null, 2), 'utf-8');
-            return findCart;
         } catch (error) {
             console.log(error);
             throw error;
