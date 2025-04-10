@@ -22,8 +22,7 @@ class productManager {
     }
     async addProduct(prod) {
         try {
-            const producto = await fs.readFile(this.filepath, 'utf-8');
-            const productos = JSON.parse(producto);
+            const productos = await this.getProducts();
 
             const maxId = Math.max(...productos.map(producto => producto.id)) || 0;
             const newProduct = { id: maxId + 1, ...prod };
@@ -39,8 +38,7 @@ class productManager {
 
     async updateProduct(id, prod){
         try {
-            const producto = await fs.readFile(this.filepath, 'utf-8');
-            const productos = JSON.parse(producto);
+            const productos = await this.getProducts();
             const productoactualizado = productos.findIndex(producto => producto.id === id);
             productos[productoactualizado] = {...productos[productoactualizado], ...prod}
             
@@ -53,8 +51,7 @@ class productManager {
     }
     async getProductById(id) {
         try {
-            const producto = await fs.readFile(this.filepath, 'utf-8');
-            const productos = JSON.parse(producto);
+            const productos = await this.getProducts();
             const findProduct = productos.find(producto => producto.id === id);
             if (!findProduct) return console.log(`El producto con el id ${id} no existe`);
             return findProduct;
@@ -65,8 +62,7 @@ class productManager {
     }
     async deleteProduct(id) {
         try {
-            const producto = await fs.readFile(this.filepath, 'utf-8');
-            const productos = JSON.parse(producto);
+            const productos = await this.getProducts();
 
             const findProduct = productos.find(producto => producto.id === id);
             if (!findProduct) return console.log(`El producto con el id ${id} no existe`);

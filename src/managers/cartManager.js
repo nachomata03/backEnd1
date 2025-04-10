@@ -10,10 +10,20 @@ class cartManager {
         this.path = join(__dirname, '..', filepath);
     }
 
-    async getCartById(id) {
+    async readFile() {
         try {
             const cart = await fs.readFile(this.path, 'utf-8');
             const carts = JSON.parse(cart);
+            return carts;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    async getCartById(id) {
+        try {
+            const carts = await this.readFile();
             const findCart = carts.find(cart => cart.id === id);
             if (!findCart) return console.log(`El carrito con el id ${id} no existe`);
             return findCart;
@@ -25,8 +35,7 @@ class cartManager {
 
     async addCart(products) {
         try {
-            const cart = await fs.readFile(this.path, 'utf-8');
-            const carts = JSON.parse(cart);
+            const carts = await this.readFile();
             const newCart = { id: carts.length === 0 ? 1 : carts[carts.length - 1].id + 1, products: products }; // si el id = 0 le ponemos 1 sino obtenemos la longitud del array y le sumamos 1
             carts.push(newCart);
             await fs.writeFile(this.path, JSON.stringify(carts, null, 2), 'utf-8');
@@ -41,8 +50,7 @@ class cartManager {
 
     async addProductToCart(cartId, productId) {
         try {
-            const carrito = await fs.readFile(this.path, 'utf-8');
-            const carts = JSON.parse(carrito);
+            const carts = await this.readFile();
             const cartIndex = carts.findIndex(cart => cart.id === cartId); // buscamos la orden de compra
             if (cartIndex === -1){
                 return null;
