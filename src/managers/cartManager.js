@@ -1,8 +1,13 @@
-const fs = require('node:fs/promises');
+import fs from "fs/promises";
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 class cartManager {
     constructor(filepath) {
-        this.path = filepath
+        this.path = join(__dirname, '..', filepath);
     }
 
     async getCartById(id) {
@@ -64,4 +69,4 @@ class cartManager {
 
 }
 
-module.exports = cartManager
+export default cartManager

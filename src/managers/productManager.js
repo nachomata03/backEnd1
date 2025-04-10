@@ -1,80 +1,13 @@
-//npm install para package-lock.json
+import fs from "fs/promises"
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
-/*
-
-class ProductManager{
-
-    static countIdProd = 0;
-    constructor(){
-        this.products = [];
-    }
-
-    mostrar(){
-        console.log(this.products);
-    }
-
-    addProduct(prod){
-        if(prod.title == "" || prod.description == "" || prod.price == "" || prod.urlImg == "" || prod.code == "" || prod.stock == "")
-            {return console.log(`Todos los campos son obligatorios, en code: ${prod.code}`)}
-        
-        else if(this.products.some(producto => producto.code == prod.code))
-            {return console.log(`El producto ${prod.code} ya existe`)}
-        
-        else{
-            ProductManager.countIdProd++;
-            const prodId = {id: ProductManager.countIdProd}
-            const producto = Object.assign({}, prod, prodId);
-            this.products.push(producto)
-            console.log(`Producto ${prod.code} agregado con exito`) 
-        }
-    }
-
-    getProductById(id){
-        const productoID = this.products.find(producto => producto.id == id)
-        if(productoID)
-            {return productoID}
-        else
-            {return console.log(`El producto con el id ${id} no existe`)}
-    }
-
-    getProducts()
-        {return this.products}
-    
-}
-
-const manager = new ProductManager();
-
-const productoDefault = {
-    title: "Producto 1",
-    description: "Descripcion producto 1",
-    price: 1000,
-    urlImg: "img1",
-    code: 1,
-    stock: 10
-}
-
-manager.addProduct(productoDefault);
-
-const productoDefault2 = {
-    title: "Producto 2",
-    description: "Descripcion producto 2",
-    price: 2000,
-    urlImg: "img2",
-    code: 2,
-    stock: 20
-}
-
-manager.addProduct(productoDefault2);
-
-manager.getProductById(3)
-
- */
-
-const fs = require('node:fs/promises');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 class productManager {
     constructor(filepath) {
-        this.filepath = filepath;
+        this.filepath = join(__dirname, '..', filepath);
     }
 
     async getProducts() {
@@ -148,5 +81,5 @@ class productManager {
     }  
 }
 
-module.exports = productManager
+export default productManager
 

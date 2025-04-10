@@ -1,14 +1,24 @@
-const express = require('express');
+import express from 'express';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+
+import ProductManager from './managers/productManager.js';
+import CartManager from './managers/cartManager.js';
+
 const server = express();
-puerto = 8080;
+const puerto = 8080;
 server.listen(puerto, ()=> console.log(`Escuchando en el puerto ${puerto}`));
 server.use(express.json())
 
-const ProductManager = require('./productManager.js');
-const productosManager = new ProductManager('./products.json');
 
-const CartManager = require('./cartManager.js');
-const cartManager = new CartManager('./carts.json');
+const productosManager = new ProductManager('/data/products.json');
+const cartManager = new CartManager('/data/carts.json');
+
+
 
 server.get('/api/products', async (req, res) => {
     try {
