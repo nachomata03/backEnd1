@@ -10,10 +10,20 @@ class productManager {
         this.filepath = join(__dirname, '..', filepath);
     }
 
+    async readFile() {
+            try {
+                const productoLeido = await fs.readFile(this.filepath, 'utf-8');
+                const productos = JSON.parse(productoLeido);
+                return productos;
+            } catch (error) {
+                console.log(error);
+                throw error;
+            }
+        }
+
     async getProducts() {
         try {
-            const producto = await fs.readFile(this.filepath, 'utf-8');
-            const productos = JSON.parse(producto);
+            const productos = await this.readFile()
             return productos
         } catch (error) {
             console.log(error);
@@ -22,7 +32,7 @@ class productManager {
     }
     async addProduct(prod) {
         try {
-            const productos = await this.getProducts();
+            const productos = await this.readFile();
 
             const maxId = Math.max(...productos.map(producto => producto.id)) || 0;
             const newProduct = { id: maxId + 1, ...prod };
@@ -38,7 +48,7 @@ class productManager {
 
     async updateProduct(id, prod){
         try {
-            const productos = await this.getProducts();
+            const productos = await this.readFile();
             const productoactualizado = productos.findIndex(producto => producto.id === id);
             productos[productoactualizado] = {...productos[productoactualizado], ...prod}
             
@@ -51,7 +61,7 @@ class productManager {
     }
     async getProductById(id) {
         try {
-            const productos = await this.getProducts();
+            const productos = await this.readFile();
             const findProduct = productos.find(producto => producto.id === id);
             if (!findProduct) return console.log(`El producto con el id ${id} no existe`);
             return findProduct;
@@ -62,7 +72,7 @@ class productManager {
     }
     async deleteProduct(id) {
         try {
-            const productos = await this.getProducts();
+            const productos = await this.readFile();
 
             const findProduct = productos.find(producto => producto.id === id);
             if (!findProduct) return console.log(`El producto con el id ${id} no existe`);
