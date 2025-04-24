@@ -30,5 +30,10 @@ router.get('/verProductos/:pid', async (req, res) => {
     }
 })
 
+router.get('/chat', (req, res) => {
+    res.render('chat', { title: 'chat' })
+})
+
+
 
 export default router
