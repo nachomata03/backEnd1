@@ -8,7 +8,12 @@
 <body>
     <h1>Productos</h1>
     {{#if producto}}
-        <ul>
+        {{!-- {{#if lenght}}
+            <div>
+                <h3>{{producto.title}}</h3>
+            </div>
+        {{else}} --}}
+            <ul>
             {{#each producto}}
                 {{#if this.discount}}
                     <h3 class="text-red-500">{{@index}} - {{this.title}}</h3>
@@ -17,7 +22,7 @@
                 {{/if}}
             {{/each}}
         </ul>
-        
+        {{!-- {{/if}} --}}
     {{else}}
         <p>No hay productos</p>
     {{/if}}
