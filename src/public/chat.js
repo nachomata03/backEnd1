@@ -1,3 +1,4 @@
+const socket = io();
 let currentUser;
 
 const form = document.querySelector('#form');
@@ -59,3 +60,5 @@ export function chat(socket){
     handleViewMessage(socket);
     handleNewMessage(socket);
 }
+
+chat(socket);

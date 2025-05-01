@@ -5,7 +5,7 @@ const productosManager = new ProductManager('./data/products.json');
 export default async (io)=> {
     const messages = [];
     io.on('connection', async (socket) => {
-        console.log(`Un nuevo cliente se conector, ID:${socket.id}`);
+        console.log(`Un nuevo cliente se conecto, ID:${socket.id}`);
 
         socket.on('login', (data) => {
             socket.broadcast.emit('new-user', data);
