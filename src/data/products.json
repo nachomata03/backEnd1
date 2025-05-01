@@ -178,17 +178,5 @@
     "thumbnails": "url_imagen_spray_almohada.jpg",
     "discount": 0.12,
     "status": "activo"
-  },
-  {
-    "id": 16,
-    "title": "Intelligent Plastic Shoes",
-    "description": "National",
-    "price": "872.21",
-    "stock": "wireless",
-    "category": "neural",
-    "thumbnails": "haptic",
-    "discount": "redundant",
-    "status": "redundant",
-    "code": "open-source"
   }
 ]

@@ -44,24 +44,26 @@ function handleviewProd(socket){
         let products = "";
         if(data.length)
         {
-            products = data.reduce((acc, document) => {
-                return acc + `<p>${document.title}</p>`;
-            }, "") 
+            console.log(data)
+            products = data.map(prod => {
+                return `<div><span>${prod.title}</span><button name="${prod.id}" class="mx-10 text-red-600 btnDelete">delete</button></div>`
+            }).join('');
         }else{
             products = "<p>No hay productos</p>"
         }
-        verProductos.innerHTML = `<div>${products}</div>`
+        verProductos.innerHTML = /* `<div>${products}</div>` */ products
     })
 }
 
 function handleRemoveProduct(socket){
-    const btnDelete = document.createElement('button');
-    btnDelete.innerText = 'X';
-    verProductos.appendChild(btnDelete);
-    btnDelete.addEventListener('click', () => {
-        socket.emit('remove-product');
+    verProductos.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btnDelete')) {
+            const idToDelete = parseInt(e.target.name);
+            console.log(typeof(idToDelete));
+            socket.emit('remove-product', idToDelete);
+        }
     })
-}
+} 
 
 export function viewProducts(socket){
     handleNewProduct(socket);
