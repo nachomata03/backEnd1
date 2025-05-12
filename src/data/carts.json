@@ -27,19 +27,6 @@
   },
   {
     "id": 3,
-    "products": [
-      {
-        "id": 6,
-        "quantity": 12
-      },
-      {
-        "id": 5,
-        "quantity": 33
-      },
-      {
-        "id": 1,
-        "quantity": 5
-      }
-    ]
+    "products": []
   }
 ]

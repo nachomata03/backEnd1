@@ -38,12 +38,9 @@ function handleNewProduct(socket){
     socket.emit('new-product', data);
 
     Swal.fire({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        title: 'Producto agregado con exito',
-        background: '#a5dc86',
+        title: 'success',
+        text: "Producto agregado con exito", 
+        icon: 'success'
     })
 }
 
@@ -57,9 +54,17 @@ function handleviewProd(socket){
                 return `<div><span>${prod.title}</span><button name="${prod.id}" class="mx-10 text-red-600 btnDelete">delete</button></div>`
             }).join('');
         }else{
-            products = "<p>No hay productos</p>"
+            products = `<p>No hay productos</p>`
         }
         verProductos.innerHTML = products
+    })
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        title: 'Productos cargados con exito',
+        background: '#a5dc86',
     })
 }
 function handleRemoveProduct(socket, e){
@@ -69,12 +74,9 @@ function handleRemoveProduct(socket, e){
     }
 
     Swal.fire({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        title: 'Producto eliminado con exito',
-        background: '#a5dc86',
+        title: 'success',
+        text: "Producto eliminado con exito", 
+        icon: 'success'
     })
 } 
 
@@ -87,6 +89,38 @@ export function viewProducts(socket){
     })
     verProductos.addEventListener('click', (e) => {
         handleRemoveProduct(socket, e);
+    })
+
+    socket.on(`error`, (data) => {
+        let errorMessage = "";
+        /* if (Object.prototype.toString.call(data.messages) === '[object Array]') { // Verifica si data.messages es un array
+            data.messages.forEach(message => {
+                errorMessage += `<ul>${message}</ul>`; // Crea párrafos para cada mensaje
+            });
+        } else {
+            errorMessage = `<li>${data.message}</li>`;
+        } */
+
+            if (Array.isArray(data.messages)) { // Verifica si data.messages es un array
+                data.messages.forEach(message => {
+                    errorMessage += `<p>${message}</p>`; // Crea párrafos para cada mensaje
+                });}
+
+
+
+            
+
+            // PROBLEMA ES QUE MUESTRA TODO JUNTO EN UN SOLO PARRAFO                
+
+
+
+
+
+        Swal.fire({
+            title: 'Error',
+            html: errorMessage, // Usa 'html' en lugar de 'text'
+            icon: 'error'
+        });
     })
 }
 

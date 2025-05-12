@@ -42,4 +42,29 @@ router.post('/:cid/products/:pid',async (req, res) => {
     }
 })
 
+// /api/carts/:cid/products/:pid ELIMINA UN PRODUCTO DEL CARRITO
+router.delete('/:cid/products/:pid',async (req, res) => {
+    const pid = parseInt(req.params.pid);
+    const cid = parseInt(req.params.cid);
+    try {
+        let cart = await cartManager.deleteProductFromCart(cid, pid);
+        cart == null ? res.status(404).send({ error: 'La orden de compra no existe con ese id' }) : res.status(200).send({ message: 'El carrito se actualizó correctamente', cart: cart })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ error: 'Error al agregar el carrito' });
+    }
+})
+
+// /api/carts/:cid ELIMINA LOS PRODUCTOS DEL CARRITO
+router.delete('/:cid',async (req, res) => {
+    const cid = parseInt(req.params.cid);
+    try {
+        let cart = await cartManager.cleanCart(cid);
+        cart == null ? res.status(404).send({ error: 'La orden de compra no existe con ese id' }) : res.status(200).send({ message: 'El carrito se actualizó correctamente', cart: cart })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ error: 'Error al agregar el carrito' });
+    }
+})
+
 export default router

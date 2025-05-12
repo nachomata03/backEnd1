@@ -1,3 +1,5 @@
+import { error } from "console";
+import e from "express";
 import fs from "fs/promises"
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -21,6 +23,28 @@ class productManager {
             }
         }
 
+    async validation(params) {
+        const err = [];
+        if(!params.title || !params.description || !params.code || !params.price || !params.stock || !params.category){
+            err.push('Todos los campos son obligatorios');
+        }
+        if(isNaN(params.price) || params.price <= 0){
+            err.push('El precio debe ser un número valido');
+        }
+
+        if(isNaN(params.stock) || params.stock <= 0 || params.stock % 1 !== 0){
+            err.push('El stock debe ser un número valido');
+        }
+
+        if(isNaN(params.discount) || params.discount <= 0 || params.discount >= 100){
+            err.push('El descuento debe ser un número valido entre 0 y 100');
+        }
+
+        if(err.length > 0){
+            throw new Error(err/* .join('\n') */);
+        }
+    }
+
     async getProducts() {
         try {
             const productos = await this.readFile()
@@ -36,6 +60,7 @@ class productManager {
 
             const maxId = Math.max(...productos.map(producto => producto.id)) || 0;
             const newProduct = { id: maxId + 1, ...prod };
+            await this.validation(newProduct);
             productos.push(newProduct);
 
             await fs.writeFile(this.filepath, JSON.stringify(productos, null, 2), 'utf-8');
@@ -49,11 +74,17 @@ class productManager {
     async updateProduct(id, prod){
         try {
             const productos = await this.readFile();
-            const productoactualizado = productos.findIndex(producto => producto.id === id);
-            productos[productoactualizado] = {...productos[productoactualizado], ...prod}
+            const productoActualizado = productos.findIndex(producto => producto.id === id);
+
+            if (productoActualizado === -1) return console.log(`El producto con el id ${id} no existe`);
+
+            productos[productoActualizado] = {...productos[productoActualizado], ...prod}
             
             await fs.writeFile(this.filepath, JSON.stringify(productos, null, 2), 'utf-8');
-            return productos[productoactualizado];
+
+        
+
+            return productos[productoActualizado];
         } catch (error) {
             console.log(error);
             throw error;

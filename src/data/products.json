@@ -32,7 +32,7 @@
     "stock": 30,
     "category": "Bienestar y Cuidado Personal",
     "thumbnails": "url_imagen_bombas_baño.jpg",
-    "discount": 0.15,
+    "discount": 15,
     "status": "activo"
   },
   {
@@ -68,7 +68,7 @@
     "stock": 60,
     "category": "Bienestar y Cuidado Personal",
     "thumbnails": "url_imagen_diario_gratitud.jpg",
-    "discount": 0.1,
+    "discount": 10,
     "status": "activo"
   },
   {
@@ -116,7 +116,7 @@
     "stock": 20,
     "category": "Bienestar y Cuidado Personal",
     "thumbnails": "url_imagen_kit_aromaterapia.jpg",
-    "discount": 0.2,
+    "discount": 20,
     "status": "activo"
   },
   {
@@ -140,7 +140,7 @@
     "stock": 30,
     "category": "Bienestar y Cuidado Personal",
     "thumbnails": "url_imagen_vela_soja.jpg",
-    "discount": 0.05,
+    "discount": 5,
     "status": "activo"
   },
   {
@@ -176,7 +176,7 @@
     "stock": 65,
     "category": "Bienestar y Cuidado Personal",
     "thumbnails": "url_imagen_spray_almohada.jpg",
-    "discount": 0.12,
+    "discount": 12,
     "status": "activo"
   }
 ]

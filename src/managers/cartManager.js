@@ -74,7 +74,46 @@ class cartManager {
         }
     }
 
+    async cleanCart(cartId) {
+        try {
+            const carts = await this.readFile();
+            const cartIndex = carts.findIndex(cart => cart.id === cartId);
+            if (cartIndex === -1) {
+                return null;
+            } else {
+                const cart = carts[cartIndex];
+                cart.products = [];
+                await fs.writeFile(this.path, JSON.stringify(carts, null, 2), 'utf-8');
+                return cart;
+            }
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
 
+    async deleteProductFromCart(cartId, productId){
+        try{
+            const carts = await this.readFile();
+            const cartIndex = carts.findIndex(cart => cart.id === cartId);
+            if (cartIndex === -1){
+                return null;
+            } else{
+                const cart = carts[cartIndex];
+                const productIndex = cart.products.findIndex(product => product.id === productId);
+                if (productIndex === -1){
+                    return null;
+                } else{
+                    cart.products.splice(productIndex, 1);
+                    await fs.writeFile(this.path, JSON.stringify(carts, null, 2), 'utf-8');
+                    return cart;
+                }
+            }
+        }catch(error){
+            console.log(error);
+            throw error;
+        }
+    }
 }
 
 export default cartManager

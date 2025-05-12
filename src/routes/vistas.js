@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { response, Router } from 'express';
 import ProductManager from '../managers/productManager.js';
 
 const router = Router(); //inicializo el router
@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
     res.render('index', { title: 'index' })
 })
 
-router.get('/home', async (req, res) => {
+router.get('/home', async (req, res) => { 
     try {
         const producto = await productosManager.getProducts();
         res.render('home', {producto})
@@ -40,7 +40,6 @@ router.get('/chat', (req, res) => {
 router.get('/realTimeProducts', (req, res) => {
     res.render('realTimeProducts', { title: 'realTimeProducts' })
 })
-
 
 
 export default router
