@@ -17,16 +17,25 @@
     "products": [
       {
         "id": 10,
-        "quantity": 5
+        "quantity": 777
       },
       {
         "id": 7,
-        "quantity": 18
+        "quantity": 17
       }
     ]
   },
   {
     "id": 3,
-    "products": []
+    "products": [
+      {
+        "id": 1,
+        "quantity": 166
+      },
+      {
+        "id": 2,
+        "quantity": 777
+      }
+    ]
   }
 ]

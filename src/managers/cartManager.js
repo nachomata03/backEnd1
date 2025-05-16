@@ -114,6 +114,47 @@ class cartManager {
             throw error;
         }
     }
+
+    async updateQuantityFromProd(cartId, productId, quantity){
+        try{
+            const carts = await this.readFile();
+            const cartIndex = carts.findIndex(cart => cart.id === cartId);
+            if (cartIndex === -1){
+                return null;
+            } else{
+                const cart = carts[cartIndex];
+                const productIndex = cart.products.findIndex(product => product.id === productId);
+                if (productIndex === -1){
+                    return null;
+                } else{
+                    cart.products[productIndex].quantity = quantity;
+                    await fs.writeFile(this.path, JSON.stringify(carts, null, 2), 'utf-8');
+                    return cart;
+                }
+            }
+        }catch(error){
+            console.log(error);
+            throw error;
+        }
+    }
+
+    async updateProductsFromCart(cartId, products){
+        try{
+            const carts = await this.readFile();
+            const cartIndex = carts.findIndex(cart => cart.id === cartId);
+            console.log(products)
+            if (cartIndex === -1){
+                return null;
+            } else{
+                carts[cartIndex].products = products;
+                await fs.writeFile(this.path, JSON.stringify(carts, null, 2), 'utf-8');
+                return carts[cartIndex];
+            }
+        }catch(error){
+            console.log(error);
+            throw error;
+        }
+    }
 }
 
 export default cartManager

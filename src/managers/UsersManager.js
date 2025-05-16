@@ -52,7 +52,7 @@ class usersManager {
 }
 
 
-
+/* 
 async function main() {
     const users = new usersManager('./users.json');
     
@@ -65,4 +65,4 @@ async function main() {
     }
 }  
 
-main();
+main(); */
