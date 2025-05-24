@@ -89,6 +89,9 @@ export default router;
 
 
 /* import dotenv from 'dotenv';
+import ProductManager from "../managers/productManager.js";
+const productosManager = new ProductManager('/data/products.json')
+import mongoose from "mongoose";
 async function main() {
 
     dotenv.config();

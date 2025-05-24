@@ -49,14 +49,14 @@ const ProductSchema = new mongoose.Schema({
 })
 
 mongoosePaginate.paginate.options = {
-    /* limit: false,
-    offset: false,
-    pagingCounter: false,
-    haspreviouspage: false, 
-    hasnextpage: false,
-    previouspage: false,
-    nextpage: false,
-    customLabels: { docs: "payload" } */
+    customLabels:{
+        docs: "payload",
+        offset: false,
+        limit: false,
+        pagingCounter: false,
+        totalDocs: false,
+        page: "currentPage",
+    }
 };
 
 ProductSchema.plugin(mongoosePaginate);

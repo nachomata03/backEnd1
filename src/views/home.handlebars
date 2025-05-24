@@ -8,12 +8,7 @@
 <body>
     <h1>Productos</h1>
     {{#if producto}}
-        {{!-- {{#if lenght}}
-            <div>
-                <h3>{{producto.title}}</h3>
-            </div>
-        {{else}} --}}
-            <ul>
+        <ul>
             {{#each producto}}
                 {{#if this.discount}}
                     <h3 class="text-red-500">{{@index}} - {{this.title}}</h3>
