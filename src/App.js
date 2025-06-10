@@ -17,12 +17,23 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+
+import sessionsRouter from './routes/sessions.router.js';
+
+import passport from 'passport';
+/* import initializePassport from './config/passport.config.js'; */
+import initializePassport from './config/passport/config.js';
+
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 dotenv.config();
 
-const MONGO_URI = process.env.MONGO_URI || "mongmongodb://localhost:27017/";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/";
 
 mongoose.connect(MONGO_URI, {
     dbName: "ecommerce",
@@ -58,6 +69,63 @@ app.use('/api/products', ProductsRouter);
 app.use('/api/carts', CartsRouter);
 
 app.use('/users', UsersRouter);
+
+
+
+
+
+
+
+
+
+
+app.use(session({
+    secret: process.env.SECRET_SESSION,
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true
+    },
+    store: MongoStore.create({
+        mongoUrl: "mongodb://localhost:27017/sessions",
+    })
+}))
+
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+app.use(cookieParser("miCookie"));
+
+
+
+
+/* app.get('/cookie', (req, res) => {
+    res.cookie('cookie', 'hola', {
+        httpOnly: true,
+        signed: true
+    }) //inicializo la cookie
+    res.send('cookie')
+})
+
+
+app.get('/secret', (req, res) => {
+    const {name, email} = req.query
+    req.session.user = {
+        name,
+        email
+    }
+    res.send({"name": req.session.user.name, "email": req.session.user.email})
+})
+
+app.get('/profile', (req, res) => {
+    res.send("Bienvenido" + req.session.user.name)
+}) */
+
+
+app.use('/api/sessions', sessionsRouter);
+
 
 /**
     {   

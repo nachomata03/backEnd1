@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+</head>
+<body>
+    <main>
+        <div>
+            <form id="form" action="/api/sessions/register" method="POST">
+                <input type="text" placeholder="Ingrese su mail" name="email" required>
+                <input type="password" placeholder="Ingrese su password" name="password" required>
+                <input type="text" placeholder="Ingrese su nombre" name="name" required>
+                <input type="text" placeholder="Ingrese su apellido" name="lastname" required>
+                <input type="text" placeholder="Ingrese su edad" name="age" required>
+                <input type="submit" value="Register">
+            </form>
+        </div>
+    </main>
+</body>
+</html>

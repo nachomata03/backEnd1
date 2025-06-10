@@ -12,8 +12,10 @@ import { PaginationParameters } from 'mongoose-paginate-v2';
 
 const pathProd = "http://localhost:8080/products"
 
-
+//en mongoAtlas
 router.get('/products', async (req, res) => { 
+    /* const user = req.session.user
+    console.log("user", user) */
     const queries = new PaginationParameters(req).get()
     const paginationObject = queries[1] || {} 
     const {query} = req.query
@@ -84,12 +86,7 @@ router.get('/carts/:cid', async (req, res) => {
     }
 })
 
-
-
-
-
-
-
+//en fileSystem
 router.get('/home', async (req, res) => {
     const producto = await productosManager.getProducts();
     res.render('home', {producto})
@@ -109,12 +106,14 @@ router.get('/home/:pid', async (req, res) => {
     }
 })
 
-router.get('/chat', (req, res) => {
-    res.render('chat', { title: 'chat' })
-})
-
+//en websocket
 router.get('/realTimeProducts', (req, res) => {
     res.render('realTimeProducts', { title: 'realTimeProducts' })
+})
+
+//chat en websocket
+router.get('/chat', (req, res) => {
+    res.render('chat', { title: 'chat' })
 })
 
 

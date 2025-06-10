@@ -1,22 +1,242 @@
 [
   {
-    "id": 2,
-    "name": "Maria",
-    "lastname": "Gomez"
+    "nombre": "Lucía",
+    "apellido": "Pérez",
+    "email": "lucia.perez@example.com",
+    "edad": 28,
+    "estado": "activo",
+    "rol": "usuario"
   },
   {
-    "id": 3,
-    "name": "Luis",
-    "lastname": "Lopez"
+    "nombre": "Mateo",
+    "apellido": "Fernández",
+    "email": "mateo.fernandez@example.com",
+    "edad": 34,
+    "estado": "inactivo",
+    "rol": "administrador"
   },
   {
-    "id": 5,
-    "name": "Pedro",
-    "lastname": "Perez"
+    "nombre": "Sofía",
+    "apellido": "López",
+    "email": "sofia.lopez@example.com",
+    "edad": 22,
+    "estado": "activo",
+    "rol": "usuario"
   },
   {
-    "id": 6,
-    "name": "Pedro",
-    "lastname": "Perez"
+    "nombre": "Juan",
+    "apellido": "Gómez",
+    "email": "juan.gomez@example.com",
+    "edad": 41,
+    "estado": "activo",
+    "rol": "administrador"
+  },
+  {
+    "nombre": "Camila",
+    "apellido": "Rodríguez",
+    "email": "camila.rodriguez@example.com",
+    "edad": 30,
+    "estado": "inactivo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Thiago",
+    "apellido": "Martínez",
+    "email": "thiago.martinez@example.com",
+    "edad": 27,
+    "estado": "activo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Valentina",
+    "apellido": "Díaz",
+    "email": "valentina.diaz@example.com",
+    "edad": 33,
+    "estado": "activo",
+    "rol": "administrador"
+  },
+  {
+    "nombre": "Benjamín",
+    "apellido": "Sánchez",
+    "email": "benjamin.sanchez@example.com",
+    "edad": 26,
+    "estado": "inactivo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Martina",
+    "apellido": "Ramírez",
+    "email": "martina.ramirez@example.com",
+    "edad": 24,
+    "estado": "activo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Dylan",
+    "apellido": "Torres",
+    "email": "dylan.torres@example.com",
+    "edad": 29,
+    "estado": "inactivo",
+    "rol": "administrador"
+  },
+  {
+    "nombre": "Emma",
+    "apellido": "Ruiz",
+    "email": "emma.ruiz@example.com",
+    "edad": 21,
+    "estado": "activo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Facundo",
+    "apellido": "Alvarez",
+    "email": "facundo.alvarez@example.com",
+    "edad": 38,
+    "estado": "activo",
+    "rol": "administrador"
+  },
+  {
+    "nombre": "Isabella",
+    "apellido": "Moreno",
+    "email": "isabella.moreno@example.com",
+    "edad": 35,
+    "estado": "inactivo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Santiago",
+    "apellido": "Romero",
+    "email": "santiago.romero@example.com",
+    "edad": 40,
+    "estado": "activo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Mía",
+    "apellido": "Navarro",
+    "email": "mia.navarro@example.com",
+    "edad": 32,
+    "estado": "activo",
+    "rol": "administrador"
+  },
+  {
+    "nombre": "Lucas",
+    "apellido": "Rojas",
+    "email": "lucas.rojas@example.com",
+    "edad": 31,
+    "estado": "inactivo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Catalina",
+    "apellido": "Silva",
+    "email": "catalina.silva@example.com",
+    "edad": 25,
+    "estado": "activo",
+    "rol": "administrador"
+  },
+  {
+    "nombre": "Julián",
+    "apellido": "Ortega",
+    "email": "julian.ortega@example.com",
+    "edad": 36,
+    "estado": "activo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Agustina",
+    "apellido": "Delgado",
+    "email": "agustina.delgado@example.com",
+    "edad": 37,
+    "estado": "inactivo",
+    "rol": "administrador"
+  },
+  {
+    "nombre": "Tomás",
+    "apellido": "Mendoza",
+    "email": "tomas.mendoza@example.com",
+    "edad": 23,
+    "estado": "activo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Abril",
+    "apellido": "Vega",
+    "email": "abril.vega@example.com",
+    "edad": 39,
+    "estado": "inactivo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Gaspar",
+    "apellido": "Castro",
+    "email": "gaspar.castro@example.com",
+    "edad": 28,
+    "estado": "activo",
+    "rol": "administrador"
+  },
+  {
+    "nombre": "Juana",
+    "apellido": "Guerrero",
+    "email": "juana.guerrero@example.com",
+    "edad": 26,
+    "estado": "activo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Bruno",
+    "apellido": "Cortés",
+    "email": "bruno.cortes@example.com",
+    "edad": 27,
+    "estado": "inactivo",
+    "rol": "administrador"
+  },
+  {
+    "nombre": "Renata",
+    "apellido": "Herrera",
+    "email": "renata.herrera@example.com",
+    "edad": 30,
+    "estado": "activo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Simón",
+    "apellido": "Aguilar",
+    "email": "simon.aguilar@example.com",
+    "edad": 34,
+    "estado": "activo",
+    "rol": "administrador"
+  },
+  {
+    "nombre": "Julia",
+    "apellido": "Molina",
+    "email": "julia.molina@example.com",
+    "edad": 22,
+    "estado": "inactivo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Lautaro",
+    "apellido": "Cabrera",
+    "email": "lautaro.cabrera@example.com",
+    "edad": 31,
+    "estado": "activo",
+    "rol": "administrador"
+  },
+  {
+    "nombre": "Paulina",
+    "apellido": "Paredes",
+    "email": "paulina.paredes@example.com",
+    "edad": 29,
+    "estado": "activo",
+    "rol": "usuario"
+  },
+  {
+    "nombre": "Maximiliano",
+    "apellido": "Ibarra",
+    "email": "maximiliano.ibarra@example.com",
+    "edad": 33,
+    "estado": "inactivo",
+    "rol": "administrador"
   }
 ]
