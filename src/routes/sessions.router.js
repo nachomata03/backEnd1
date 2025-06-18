@@ -74,17 +74,16 @@ router.get('/logout', async (req, res) => {
     });
 });
 
-/* router.post(
-    '/register', 
-    passport.authenticate('register', {failureRedirect: '/'}), 
-    async (req, res) => {
-        res.send({status: 'success', message: 'User registered successfully'})
-})
 
-router.post('/login', passport.authenticate('login', {failureRedirect: '/api/sessions/register'}), async (req, res) => {
-    req.session.user = req.user
-    res.redirect('/products')
-}) */
+
+
+
+
+
+
+
+
+
 
 router.get('/login', (req, res) => {
     res.render('login', {title: 'login'})
@@ -102,5 +101,36 @@ router.get('/register', (req, res) => {
 router.post('/register', passport.authenticate('register', {successRedirect: '/api/sessions/profile', failureRedirect: '/'}), async (req, res) => {
     req.session.user = req.user
 })
+
+
+router.get('/github', passport.authenticate('github', {failureRedirect: '/api/sessions/register'}, {successRedirect: '/api/sessions/profile'}), async (req, res) => {
+})
+
+router.get('/githubcallback', passport.authenticate('github', {failureRedirect: '/api/sessions/login'}), async (req, res) => {
+    req.session.user = req.user
+    res.redirect('/api/sessions/profile')
+})
+
+
+
+
+
+
+
+
+
+
+/* router.get('/github/register', passport.authenticate('githubregister', {failureRedirect: '/'}, {successRedirect: '/api/sessions/profile'}), async (req, res) => {
+})
+
+router.get('/githubcallback/login', passport.authenticate('githublogin', {failureRedirect: '/api/sessions/login'}), async (req, res) => {
+    req.session.user = req.user
+    res.redirect('/api/sessions/profile')
+})
+
+router.get('/githubcallback/register', passport.authenticate('githublogin', {failureRedirect: '/api/sessions/register'}), async (req, res) => {
+    req.session.user = req.user
+    res.redirect('/api/sessions/profile')
+}) */
 
 export default router

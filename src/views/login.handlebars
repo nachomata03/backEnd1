@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,6 +16,61 @@
         </div>
 
         <p>¿No tenés cuenta? <a href="/api/sessions/register">Registrate acá</a></p>
+        <p><a href="/api/sessions/github/login">Ingresar con Github</a></p>
     </main>
+</body>
+</html> --}}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #1a202c; /* Fondo oscuro */
+            color: #e2e8f0; /* Texto claro */
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h2 class="text-3xl font-bold text-center mb-6 text-white">Iniciar Sesión</h2>
+
+        <!-- Formulario de Login (opcional, puedes tenerlo o no) -->
+        <form action="/api/sessions/login" method="POST" class="space-y-4">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-300 mb-1">Correo Electrónico</label>
+                <input type="email" name="email" required
+                        class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white">
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-300 mb-1">Contraseña</label>
+                <input type="password" name="password" required
+                        class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white">
+            </div>
+            <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition ease-in-out duration-150">
+                Iniciar Sesión
+            </button>
+        </form>
+
+        <div class="relative flex py-5 items-center">
+            <div class="flex-grow border-t border-gray-700"></div>
+            <span class="flex-shrink mx-4 text-gray-500">O</span>
+            <div class="flex-grow border-t border-gray-700"></div>
+        </div>
+
+        <!-- Botón de Login con GitHub -->
+        <a href="/api/sessions/github"
+            class="w-full flex items-center justify-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition ease-in-out duration-150">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.499.09.679-.217.679-.481 0-.237-.008-.865-.013-1.7-2.782.602-3.369-1.34-3.369-1.34-.454-1.158-1.11-1.465-1.11-1.465-.908-.619.069-.605.069-.605 1.004.07 1.532 1.03 1.532 1.03.892 1.529 2.341 1.084 2.902.829.091-.64.351-1.085.636-1.334-2.22-.253-4.555-1.115-4.555-4.942 0-1.096.391-1.996 1.03-2.693-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.025A9.435 9.435 0 0112 6.844c.85.004 1.701.113 2.502.302 1.909-1.296 2.747-1.025 2.747-1.025.546 1.379.203 2.398.099 2.651.64.697 1.029 1.597 1.029 2.693 0 3.832-2.339 4.681-4.566 4.935.359.307.678.915.678 1.846 0 1.335-.012 2.41-.012 2.727 0 .268.18.581.687.482C21.137 20.19 24 16.438 24 12.017 24 6.484 19.522 2 14 2h-2z" clip-rule="evenodd" />
+            </svg>
+            Iniciar Sesión con GitHub
+        </a>
+    </div>
 </body>
 </html>

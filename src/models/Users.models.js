@@ -35,6 +35,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: "activo",
         enum: ["activo", "inactivo"]
+    },
+    githubId: {
+        type: String,
+        default: null
     }
 })
 
