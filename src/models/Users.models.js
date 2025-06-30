@@ -3,11 +3,11 @@ import mongoose from "mongoose";
 const usersCollection = "users"
 
 const UserSchema = new mongoose.Schema({
-    name: {
+    firstName: {
         type: String,
         required: true
     },
-    lastname: {
+    lastName: {
         type: String,
         required: true
     },
@@ -39,6 +39,14 @@ const UserSchema = new mongoose.Schema({
     githubId: {
         type: String,
         default: null
+    }, 
+    twitterId: {
+        type: String,
+        default: null
+    },
+    cartId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "carts"
     }
 })
 

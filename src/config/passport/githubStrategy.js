@@ -1,7 +1,8 @@
 import { Strategy as GitHubStrategy } from "passport-github2";
 import UserModel from "../../models/Users.models.js";
+import { generateToken } from "../../utils.js";
+import CartModel from '../../models/Carts.models.js';
 import dotenv from 'dotenv';
-import { json } from "express";
 dotenv.config();
 
 async function verifyGitHub (accessToken, refreshToken, profile, done) {
@@ -15,20 +16,30 @@ async function verifyGitHub (accessToken, refreshToken, profile, done) {
 
         const user = await UserModel.findOne({email: email})
 
+        //creacion de un carrito para el usuario
+        const lastCart = await CartModel.findOne().sort({ id: -1 });
+        const nextId = lastCart ? lastCart.id + 1 : 1;
+        const cart = await CartModel.create({
+            id: nextId,
+            products: []
+        });
+    
         if(!user){
             const newUser = {
-            name: profile._json.name,
-            lastname: profile._json.lastname || "aa",
-            email: email,
-            age: 18,
-            password: "aa123",
-            githubId: profile._json.id
+                name: profile._json.name,
+                lastname: profile._json.lastname || "aa",
+                email: email,
+                age: 18,
+                password: "aa123",
+                githubId: profile._json.id,
+                cartId: cart._id
             }
             const createdUser = await UserModel.create(newUser)
+            const token = await generateToken({username: email, id: createdUser._id, role: createdUser.role, nameUser: createdUser.name});
             return done(null, createdUser)
         }
         
-        return done(null, user)
+        return done(null, false, {message: 'El usuario ya existe'})
     }catch(error){
         console.log(`Error en login de git hub: ${error}`)
         return done(error)

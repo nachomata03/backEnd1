@@ -24,7 +24,6 @@ import MongoStore from 'connect-mongo';
 import sessionsRouter from './routes/sessions.router.js';
 
 import passport from 'passport';
-/* import initializePassport from './config/passport.config.js'; */
 import initializePassport from './config/passport/config.js';
 
 
@@ -70,16 +69,7 @@ app.use('/api/carts', CartsRouter);
 
 app.use('/users', UsersRouter);
 
-
-
-
-
-
-
-
-
-
-app.use(session({
+/* app.use(session({
     secret: process.env.SECRET_SESSION,
     resave: true,
     saveUninitialized: true,
@@ -89,54 +79,11 @@ app.use(session({
     store: MongoStore.create({
         mongoUrl: "mongodb://localhost:27017/sessions",
     })
-}))
-
+})) */
+app.use(cookieParser());
 initializePassport();
 app.use(passport.initialize());
-app.use(passport.session());
-
-
-app.use(cookieParser("miCookie"));
-
-
-
-
-/* app.get('/cookie', (req, res) => {
-    res.cookie('cookie', 'hola', {
-        httpOnly: true,
-        signed: true
-    }) //inicializo la cookie
-    res.send('cookie')
-})
-
-
-app.get('/secret', (req, res) => {
-    const {name, email} = req.query
-    req.session.user = {
-        name,
-        email
-    }
-    res.send({"name": req.session.user.name, "email": req.session.user.email})
-})
-
-app.get('/profile', (req, res) => {
-    res.send("Bienvenido" + req.session.user.name)
-}) */
+/* app.use(passport.session()); */
 
 
 app.use('/api/sessions', sessionsRouter);
-
-
-/**
-    {   
-        "title": "{{$randomProductName}}",
-        "description": "{{$randomJobDescriptor}}",
-        "price": "{{$randomPrice}}",
-        "stock": "{{$randomAdjective}}",
-        "category": "{{$randomAdjective}}",
-        "thumbnails": "{{$randomAdjective}}",
-        "discount":"{{$randomAdjective}}",
-        "status":"{{$randomAdjective}}",
-        "code":"{{$randomAdjective}}"
-    }
-*/

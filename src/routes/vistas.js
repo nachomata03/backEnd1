@@ -14,8 +14,6 @@ const pathProd = "http://localhost:8080/products"
 
 //en mongoAtlas
 router.get('/products', async (req, res) => { 
-    /* const user = req.session.user
-    console.log("user", user) */
     const queries = new PaginationParameters(req).get()
     const paginationObject = queries[1] || {} 
     const {query} = req.query
@@ -54,7 +52,18 @@ router.get('/products', async (req, res) => {
         response.nextLink = nextLink
         response.status = "success"
 
-        res.json({response})
+        /* res.json({response}) */
+        const result = response.payload.map(prod => prod.toObject())
+        
+        res.render('products', {
+            productos: result, 
+            currentPage: response.currentPage, 
+            hasPrevPage: response.hasPrevPage, 
+            hasNextPage: response.hasNextPage, 
+            prevLink,
+            nextLink,
+            totalPages: response.totalPages
+        })
 
     } catch (error) {
         console.log(error);
