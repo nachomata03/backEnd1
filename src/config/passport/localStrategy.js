@@ -6,7 +6,7 @@ import {generateToken} from "../../utils.js"
 
 
 async function verifyRegister (req, username, password, done) {
-    const user = req
+    const user = {...req.body}
     try {
         const emailExistente = await UserModel.findOne({email: username})
         if (emailExistente) {
@@ -26,7 +26,7 @@ async function verifyRegister (req, username, password, done) {
             cartId : cart._id,
             password: await createHash(password)
         }
-        await UserModel.create(userConHash)
+        const result = await UserModel.create(userConHash)
         return done(null, result)
 
     } catch (error) {
@@ -42,7 +42,7 @@ async function verifyLogin (username, password, done){
         const passwordOk = await isValidPassword(user, password)
         if(!passwordOk) return done(null, false, {message: 'Credenciales incorrectas'})
         
-        const payload = {username: user.email, id: user._id, role: user.role, nameUser: user.name};
+        const payload = {username: user.email, id: user._id, role: user.role, firstName: user.firstName, lastName: user.lastName};
         const token = await generateToken(payload)
         if(!token) return done(null, false, {message: 'No se pudo generar el token'})
         /* para cuando se usa session

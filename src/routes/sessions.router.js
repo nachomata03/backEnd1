@@ -69,7 +69,8 @@ router.get('/githubcallback', async (err, result, info) => {
 
 router.get('/current', passport.authenticate("jwt", {session: false}), async (req, res) => {
     const user = req.user
-    res.render('current', {"user": user.toObject()})
+    /* res.render('current', {"user": user.toObject()}) */
+    res.render('current', {user})
 })
 
 export default router

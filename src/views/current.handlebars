@@ -29,13 +29,22 @@
         </div>
         {{/if}}
 
-        <div class="space-y-4">
-            <div><span class="font-semibold">Nombre:</span> {{user.name}}</div>
-            <div><span class="font-semibold">Apellido:</span> {{user.lastname}}</div>
+        {{!-- <div class="space-y-4">
+            <div><span class="font-semibold">Nombre:</span> {{user.firstName}}</div>
+            <div><span class="font-semibold">Apellido:</span> {{user.lastName}}</div>
             <div><span class="font-semibold">Email:</span> {{user.email}}</div>
             <div><span class="font-semibold">Edad:</span> {{user.age}}</div>
             <div><span class="font-semibold">Rol:</span> {{user.role}}</div>
+        </div> --}}
+
+        <div class="space-y-4">
+            <div><span class="font-semibold">Nombre:</span> {{user.firstName}}</div>
+            <div><span class="font-semibold">Apellido:</span> {{user.lastName}}</div>
+            <div><span class="font-semibold">Email:</span> {{user.username}}</div>
+            <div><span class="font-semibold">ID:</span> {{user.id}}</div>
+            <div><span class="font-semibold">Rol:</span> {{user.role}}</div>
         </div>
+
     </main>
 
 </body>
