@@ -1,78 +1,83 @@
 import { Router } from "express";
-import CartManager from "../managers/cartManager.js";
+import { getCartFs, postCartFs, postProductToCartFs, deleteProductFromCartFs, deleteCartFs, putCartFs, putQuantityCartFs } from "../controllers/fileSystem/carts.fs.controllers.js";
+
 
 const router = Router();
 
-const cartManager = new CartManager('/data/carts.json');
 
-// /api/carts/:cid TRAE UN PRODUCTO DEL CARRITO POR ID
-router.get('/:pid', async (req, res) => {
-    const id = parseInt(req.params.pid);
+// /api/carts/:cid TRAE UN CARRITO
+router.get('/:cid', async (req, res) => {
     try {
-        const cart = await cartManager.getCartById(id);
+        const id = parseInt(req.params.cid);
+        const cart = await getCartFs(id);
         res.json(cart)
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: 'Error al obtener el carrito' });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 })
 
 // /api/carts CREA UN NUEVO CARRITO
 router.post('/',async (req, res) => {
-    const producto = req.body
     try {
-        const cart = await cartManager.addCart(producto);
+        const producto = req.body
+        const cart = await postCartFs(producto);
         res.send({ message: 'El carrito se actualizó correctamente', cart: cart })
     } catch (error) {
         console.log(error);
-        res.status(500).send({ error: 'Error al agregar el carrito' });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 })
 
 // /api/carts/:cid/products/:pid AGREGA UN PRODUCTO AL CARRITO DE UN CARRITO DETERMINADO
-router.post('/:cid/products/:pid',async (req, res) => {
-    const pid = parseInt(req.params.pid);
-    const cid = parseInt(req.params.cid);
+router.post('/:cid/products/:pid',async (req, res) => { 
     try {
-        let cart = await cartManager.addProductToCart(cid, pid);
-        cart == null ? res.status(404).send({ error: 'La orden de compra no existe con ese id' }) : res.status(200).send({ message: 'El carrito se actualizó correctamente', cart: cart })
+        const pid = parseInt(req.params.pid);
+        const cid = parseInt(req.params.cid);
+        let cart = await postProductToCartFs(cid, pid);
+        res.status(201).send({ message: 'El carrito se actualizó correctamente', cart: cart })
     } catch (error) {
         console.log(error);
-        res.status(500).send({ error: 'Error al agregar el carrito' });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 })
 
 // /api/carts/:cid/products/:pid ELIMINA UN PRODUCTO DEL CARRITO
 router.delete('/:cid/products/:pid',async (req, res) => {
-    const pid = parseInt(req.params.pid);
-    const cid = parseInt(req.params.cid);
     try {
-        let cart = await cartManager.deleteProductFromCart(cid, pid);
-        cart == null ? res.status(404).send({ error: 'La orden de compra no existe con ese id' }) : res.status(200).send({ message: 'El carrito se actualizó correctamente', cart: cart })
+        const pid = parseInt(req.params.pid);
+        const cid = parseInt(req.params.cid);
+        let cart = await deleteProductFromCartFs(cid, pid);
+        res.status(200).send({ message: 'El carrito se actualizó correctamente', cart: cart })
     } catch (error) {
         console.log(error);
-        res.status(500).send({ error: 'Error al agregar el carrito' });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 })
 
 // /api/carts/:cid ELIMINA LOS PRODUCTOS DEL CARRITO
 router.delete('/:cid',async (req, res) => {
-    const cid = parseInt(req.params.cid);
     try {
-        let cart = await cartManager.cleanCart(cid);
-        cart == null ? res.status(404).send({ error: 'La orden de compra no existe con ese id' }) : res.status(200).send({ message: 'El carrito se actualizó correctamente', cart: cart })
+        const cid = parseInt(req.params.cid);
+        let cart = await deleteCartFs(cid);
+        res.status(200).send({ message: 'El carrito se actualizó correctamente', cart: cart })
     } catch (error) {
         console.log(error);
-        res.status(500).send({ error: 'Error al agregar el carrito' });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 })
 
-// /api/carts/:cid ACTUALIZA UN CARRITO
+// /api/carts/:cid CAMBIA LOS PRODUCTOS DEL CARRITO POR EL NUEVO
 router.put('/:cid',async (req, res) => {
-    const cid = parseInt(req.params.cid);
-    const body = req.body;
     try {
-        let cart = await cartManager.updateProductsFromCart(cid, body);
+        const cid = parseInt(req.params.cid);
+        const body = req.body;
+        let cart = await putCartFs(cid, body);
         cart == null ? res.status(404).send({ error: 'La orden de compra no existe con ese id' }) : res.status(200).send({ message: 'El carrito se actualizó correctamente', cart: cart })
     } catch (error) {
         console.log(error);
@@ -82,15 +87,17 @@ router.put('/:cid',async (req, res) => {
 
 // /api/carts/:cid/products/:pid ACTUALIZA LA CANTIDAD DE UN PRODUCTO
 router.put('/:cid/products/:pid',async (req, res) => {
-    const pid = parseInt(req.params.pid);
-    const cid = parseInt(req.params.cid);
-    const body = req.body;
-    const { quantity } = body
     try {
-        let cart = await cartManager.updateQuantityFromProd(cid, pid, quantity);
-        cart == null ? res.status(404).send({ error: 'La orden de compra no existe con ese id' }) : res.status(200).send({ message: 'El carrito se actualizó correctamente', cart: cart })
+        const pid = parseInt(req.params.pid);
+        const cid = parseInt(req.params.cid);
+        const { quantity } = req.body
+        let cart = await putQuantityCartFs(cid, pid, quantity);
+        res.status(200).send({ message: 'El carrito se actualizó correctamente', cart: cart })
     } catch (error) {
         console.log(error);
-        res.status(500).send({ error: 'Error al agregar el carrito' });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 })
+
+export default router

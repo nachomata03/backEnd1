@@ -1,19 +1,20 @@
-import { response, Router } from 'express';
-import ProductManager from '../managers/productManager.js';
+import { Router } from 'express';
 
-const router = Router(); //inicializo el router
-
-const productosManager = new ProductManager('/data/products.json');
+import {getProductId} from '../controllers/products.controllers.js'
+import {getCartById} from '../controllers/cart.controllers.js'
+import {getProductsFs} from '../controllers/fileSystem/products.fs.controllers.js'
+import {getProductByIdFs} from '../controllers/fileSystem/products.fs.controllers.js'
 
 import ProductsModel from '../models/Products.models.js';
-import CartsModel from '../models/Carts.models.js';
 
 import { PaginationParameters } from 'mongoose-paginate-v2';
+
+const router = Router(); //inicializo el router
 
 const pathProd = "http://localhost:8080/products"
 
 //en mongoAtlas
-router.get('/products', async (req, res) => { 
+router.get('/products', async (req, res) => {
     const queries = new PaginationParameters(req).get()
     const paginationObject = queries[1] || {} 
     const {query} = req.query
@@ -72,46 +73,50 @@ router.get('/products', async (req, res) => {
 })
 
 router.get('/products/:pid', async (req, res) => {
-    const id = req.params.pid;
     try {
-        const producto = await ProductsModel.findById(id);
-        if (!producto) return res.status(404).send({ error: 'Producto no encontrado' });
+        const id = req.params.pid;
+        const producto = await getProductId(id);
         res.render('productDetail', {producto: producto.toObject()})
     } catch (error) {
         console.log(error);
-        res.status(500).send({ error: 'Error al obtener el producto' });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 })
 
 router.get('/carts/:cid', async (req, res) => {
-    const id = req.params.cid;
     try {
-        const cart = await CartsModel.findById(id).populate('products.id');
-        if (!cart) return res.status(404).send({ error: 'Carrito no encontrado' });
+        const id = req.params.cid;
+        const cart = await getCartById(id);
         res.render('carts', {cart: cart.toObject()})
     } catch (error) {
         console.log(error);
-        res.status(500).send({ error: 'Error al obtener el carrito' });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 })
 
 //en fileSystem
 router.get('/home', async (req, res) => {
-    const producto = await productosManager.getProducts();
-    res.render('home', {producto})
+    try{
+        const producto = await getProductsFs();
+        res.render('home', {producto})
+    }catch (error) {
+        console.log(error);
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
+    }
 })
 
 router.get('/home/:pid', async (req, res) => {
-    const id = parseInt(req.params.pid);
     try {
-        const producto = await productosManager.getProductById(id);
-        const productoArray = [producto]
-        const lenght = productoArray.length == 1 ? true : false
-        console.log(lenght);
+        const id = parseInt(req.params.pid);
+        const producto = await getProductByIdFs(id);
         res.render('home', {producto: productoArray, lenght})
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: 'Error al obtener los productos' });
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 })
 

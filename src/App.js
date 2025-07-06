@@ -8,6 +8,8 @@ import UsersRouter from './routes/users.router.js';
 import { Server } from 'socket.io';
 import http from 'http';
 import websocket from './websocket.js';
+import productFileSystemRouter from './routes/productFileSystem.router.js';
+import CartFileSystemRouter from './routes/cartFileSystem.router.js';
 
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
@@ -18,8 +20,8 @@ import { dirname, join } from 'path';
 
 
 import cookieParser from 'cookie-parser';
-import session from 'express-session';
-import MongoStore from 'connect-mongo';
+//import session from 'express-session';
+//import MongoStore from 'connect-mongo';
 
 import sessionsRouter from './routes/sessions.router.js';
 
@@ -32,7 +34,7 @@ const __dirname = dirname(__filename);
 
 dotenv.config();
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/";
+const MONGO_URI = /* process.env.MONGO_URI || */ "mongodb://localhost:27017/";
 
 mongoose.connect(MONGO_URI, {
     dbName: "ecommerce",
@@ -67,6 +69,9 @@ app.use('/api/products', ProductsRouter);
 //hacemos que el servidor use el router y le ponemos la ruta y ahi usa todos los metodos
 app.use('/api/carts', CartsRouter);
 
+app.use('/productsFs', productFileSystemRouter);
+app.use('/cartFs', CartFileSystemRouter);
+
 app.use('/users', UsersRouter);
 
 /* app.use(session({
@@ -83,7 +88,7 @@ app.use('/users', UsersRouter);
 app.use(cookieParser());
 initializePassport();
 app.use(passport.initialize());
-/* app.use(passport.session()); */
+//app.use(passport.session());
 
 
 app.use('/api/sessions', sessionsRouter);

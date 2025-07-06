@@ -1,5 +1,3 @@
-import { error } from "console";
-import e from "express";
 import fs from "fs/promises"
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -15,7 +13,13 @@ class productManager {
     async readFile() {
             try {
                 const productoLeido = await fs.readFile(this.filepath, 'utf-8');
+                if (!productoLeido.trim()) {
+                    return [];
+                }
                 const productos = JSON.parse(productoLeido);
+                if (!Array.isArray(productos)) {
+                    throw new Error('El contenido del archivo no es un array');
+                }
                 return productos;
             } catch (error) {
                 console.log(error);
