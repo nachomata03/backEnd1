@@ -1,20 +1,22 @@
 import { Router } from 'express';
 
-import {getProductId} from '../controllers/products.controllers.js'
-import {getCartById} from '../controllers/cart.controllers.js'
-import {getProductsFs} from '../controllers/fileSystem/products.fs.controllers.js'
-import {getProductByIdFs} from '../controllers/fileSystem/products.fs.controllers.js'
+import ProductsController from '../controllers/products.controllers.js'
+import CartsController from '../controllers/cart.controllers.js'
+import {getProducts} from '../controllers/fileSystem/products.fs.controllers.js'
+import {getProductById} from '../controllers/fileSystem/products.fs.controllers.js'
 
 import ProductsModel from '../models/Products.models.js';
 
 import { PaginationParameters } from 'mongoose-paginate-v2';
+
+const productsController = new ProductsController();
 
 const router = Router(); //inicializo el router
 
 const pathProd = "http://localhost:8080/products"
 
 //en mongoAtlas
-router.get('/products', async (req, res) => {
+router.get('/all-products', async (req, res) => {
     const queries = new PaginationParameters(req).get()
     const paginationObject = queries[1] || {} 
     const {query} = req.query
@@ -72,10 +74,10 @@ router.get('/products', async (req, res) => {
     }
 })
 
-router.get('/products/:pid', async (req, res) => {
+router.get('/product/:pid', async (req, res) => {
     try {
         const id = req.params.pid;
-        const producto = await getProductId(id);
+        const producto = await productsController.getProduct(id);
         res.render('productDetail', {producto: producto.toObject()})
     } catch (error) {
         console.log(error);
@@ -84,10 +86,10 @@ router.get('/products/:pid', async (req, res) => {
     }
 })
 
-router.get('/carts/:cid', async (req, res) => {
+router.get('/cart/:cid', async (req, res) => {
     try {
         const id = req.params.cid;
-        const cart = await getCartById(id);
+        const cart = await CartsController.getCart(id);
         res.render('carts', {cart: cart.toObject()})
     } catch (error) {
         console.log(error);
@@ -99,7 +101,7 @@ router.get('/carts/:cid', async (req, res) => {
 //en fileSystem
 router.get('/home', async (req, res) => {
     try{
-        const producto = await getProductsFs();
+        const producto = await getProducts();
         res.render('home', {producto})
     }catch (error) {
         console.log(error);
@@ -111,7 +113,7 @@ router.get('/home', async (req, res) => {
 router.get('/home/:pid', async (req, res) => {
     try {
         const id = parseInt(req.params.pid);
-        const producto = await getProductByIdFs(id);
+        const producto = await getProductById(id);
         res.render('home', {producto: productoArray, lenght})
     } catch (error) {
         console.log(error);

@@ -1,97 +1,66 @@
-import UsersModel from "../models/Users.models.js";
-import CartModel from "../models/Carts.models.js";
-import { createHash } from "../utils.js";
-export const getUsersControllers = async () => {
-    try{
-        const users = await UsersModel.find();
-        if(!users){
-            const error = new Error('Usuarios no encontrados');
-            error.statusCode = 404;
-            throw error
+import { getUsersServices, getUserIdServices, postUsersServices, putUsersServices, deleteUsersServices } from "../services/users.services.js";
+
+class UsersController{
+
+    async getUsers(req, res) {
+        try{
+            const result = await getUsersServices()
+            res.json({status: 'success', response: result})
+        } catch (error) {
+            const statusCode = error.statusCode || 500;
+            res.status(statusCode).json({ status: 'error', message: error.message });
         }
-        return users;
-    }catch(error){
-        throw error
     }
+
+    async getUser(req, res) {
+        try{
+            const id = req.params.id;
+            const result = await getUserIdServices(id)
+            res.json({status: 'success', response: result})
+        } catch (error) {
+            const statusCode = error.statusCode || 500;
+            res.status(statusCode).json({ status: 'error', message: error.message });
+        }
+    }
+
+    async createUser(req, res){
+        try{
+            const body = req.body;
+            if(!body.email || !body.password || !body.firstName || !body.lastName || !body.age || !body.role || !body.state){
+                const error = new Error('Todos los campos son obligatorios');
+                error.statusCode = 409; // Conflicto
+                throw error;
+            }
+            const result = await postUsersServices(body)
+            res.status(201).json({ status: 'success', response: result });
+        } catch (error) {
+            const statusCode = error.statusCode || 500;
+            res.status(statusCode).json({ status: 'error', message: error.message });
+        }
+    }
+
+    async updateUser(req, res){
+        try {
+            const id = req.params.id;
+            const body = req.body;
+            const result = await putUsersServices(id, body);
+            res.json({ status: 'success', response: result });
+        } catch (error) {
+            const statusCode = error.statusCode || 500;
+            res.status(statusCode).json({ status: 'error', message: error.message });
+        } 
+    }
+
+    async deleteUser(req, res){
+        try{
+            const id = req.params.id;
+            const result = await deleteUsersServices(id)
+            res.json({status: 'success', response: result})
+        }catch(error){
+            const statusCode = error.statusCode || 500;
+            res.status(statusCode).json({ status: 'error', message: error.message });
+        }
+    }    
 }
 
-export const getUserIdControllers = async (id) => {
-    try{
-        const user = await UsersModel.findById(id);
-        if(!user){
-            const error = new Error('Usuario no encontrado');
-            error.statusCode = 404;
-            throw error
-        }
-        return user;
-    }catch(error){
-        throw error
-    }
-}
-
-export const postUsersControllers = async (body) => {
-    try{
-
-        // Verificar si ya existe un usuario con ese email
-        const existingUser = await UsersModel.findOne({ email: body.email });
-        if (existingUser) {
-            const error = new Error('El email ya está registrado');
-            error.statusCode = 409; // Conflicto
-            throw error;
-        }
-
-        const lastCart = await CartModel.findOne().sort({ id: -1 });
-        const nextId = lastCart ? lastCart.id + 1 : 1;
-
-        const cart = await CartModel.create({
-            id: nextId,
-            products: []
-        });
-        const userHash = {
-            ...body,
-            cartId: cart._id,
-            password: await createHash(body.password)
-        }
-        const result = await UsersModel.create(userHash)
-        return result;
-    }catch(error){
-        throw error
-    }
-}
-
-export const putUsersControllers = async (id, body) => {
-    try {
-        const user = await UsersModel.findById(id);
-        if (!user) {
-            const error = new Error('Usuario no encontrado');
-            error.statusCode = 404;
-            throw error;
-        }
-
-        if (body.password) {
-            body.password = await createHash(body.password);
-        }
-
-        await UsersModel.updateOne({ _id: id }, { $set: body });
-        const modifiedUser = await UsersModel.findById(id);
-        return modifiedUser;
-
-    } catch (error) {
-        throw error; 
-    }
-}
-
-export const deleteUsersControllers = async (id) => {
-    try{
-        const user = await UsersModel.findById(id);
-        if(!user){
-            const error = new Error('Usuario no encontrado');
-            error.statusCode = 404;
-            throw error
-        }
-        const result = await UsersModel.deleteOne({ _id: id });
-        return result;
-    }catch(error){
-        throw error
-    }
-}
+export default UsersController

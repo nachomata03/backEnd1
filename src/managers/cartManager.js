@@ -99,11 +99,13 @@ class cartManager {
             const carts = await this.readFile();
             const cartIndex = carts.findIndex(cart => cart.id === cartId);
             if (cartIndex === -1){
+                console.log("El carrito no existe");
                 return null;
             } else{
                 const cart = carts[cartIndex];
                 const productIndex = cart.products.findIndex(product => product.id === productId);
                 if (productIndex === -1){
+                    console.log("El producto no existe");
                     return null;
                 } else{
                     cart.products.splice(productIndex, 1);
@@ -122,11 +124,13 @@ class cartManager {
             const carts = await this.readFile();
             const cartIndex = carts.findIndex(cart => cart.id === cartId);
             if (cartIndex === -1){
+                console.log("El carrito no existe");
                 return null;
             } else{
                 const cart = carts[cartIndex];
                 const productIndex = cart.products.findIndex(product => product.id === productId);
                 if (productIndex === -1){
+                    console.log("El producto no existe");
                     return null;
                 } else{
                     cart.products[productIndex].quantity = quantity;

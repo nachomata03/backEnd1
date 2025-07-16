@@ -1,118 +1,71 @@
-import ProductsModel from "../models/Products.models.js";
+import {getProductsServices, getProductIdServices, postProductServices, putProductServices, deleteProductServices } from "../services/products.services.js"
 
-export const getProducts = async () => {
-    try {
-        const products = await ProductsModel.find();
-        if (!products){
-            const error = new Error('Productos no encontrados');
-            error.statusCode = 404;
-            throw error
+class ProductsController {
+    // Método para obtener todos los productos
+    async getProducts(req, res) {
+        try {
+            
+            const products = await getProductsServices();
+            res.json(products);
+        } catch (error) {
+            console.error("Error al obtener productos:", error); 
+            const statusCode = error.statusCode || 500;
+            res.status(statusCode).json({ status: 'error', message: error.message });
         }
-        return products
-    } catch (error) {
-        throw error
+    }
+
+    // Método para obtener un producto por ID
+    async getProduct(req, res) {
+        try {
+            const id = req.params.pid;
+            const product = await getProductIdServices(id);
+            res.json(product);
+        } catch (error) {
+            console.error("Error al obtener producto por ID:", error); 
+            const statusCode = error.statusCode || 500;
+            res.status(statusCode).json({ status: 'error', message: error.message });
+        }
+    }
+
+    // Método para crear un nuevo producto
+    async createProduct(req, res) {
+        try {
+            const body = req.body
+            const result = await postProductServices(body);
+            res.send({ message: 'El producto se cargo correctamente', producto: result })
+        } catch (error) {
+            console.error("Error al crear producto:", error);
+            const statusCode = error.statusCode || 500;
+            res.status(statusCode).json({ status: 'error', message: error.message });
+        }
+    }
+
+    // Método para actualizar un producto existente
+    async updateProduct(req, res) {
+        try{
+            const id = req.params.pid
+            const body = req.body; 
+            const productoActualizado = await putProductServices(id, body);
+            res.send({ message: 'El producto se actualizó correctamente', producto: productoActualizado })
+        } catch (error) {
+            console.error("Error al actualizar producto:", error);
+            const statusCode = error.statusCode || 500;
+            res.status(statusCode).json({ status: 'error', message: error.message });
+        }
+    }
+
+    // Método para eliminar un producto
+    async deleteProduct(req, res) {
+        try {
+            const id = req.params.pid;
+            const producto = await deleteProductServices(id);
+            res.send({message: `El producto se elimino correctamente`, producto: producto})
+        } catch (error) {
+            console.error("Error al eliminar producto:", error);
+            const statusCode = error.statusCode || 500;
+            res.status(statusCode).json({ status: 'error', message: error.message });
+        }
     }
 }
 
-export const getProductId = async (id) => {
-    try {
-        const product = await ProductsModel.findById(id);
-        if (!product){
-            const error = new Error('Producto no encontrado');
-            error.statusCode = 404;
-            throw error
-        }
-        return product
-    } catch (error) {
-        throw error
-    }
-}
-
-export const postProduct = async (body) => {
-    try {
-        console.log(body);
-        if(!body.title || !body.description || !body.code || !body.price || !body.stock || !body.discount || !body.category || !body.thumbnails || !body.status) {
-            const error = new Error('Todos los campos son obligatorios');
-            error.statusCode = 400;
-            throw error
-        }
-        body.price = parseFloat(body.price);
-        body.stock = parseInt(body.stock);
-        body.discount = parseFloat(body.discount);
-
-        if (isNaN(body.price) || isNaN(body.stock) || isNaN(body.discount)) {
-            const error = new Error('El precio, stock y descuento deben ser números válidos');
-            error.statusCode = 400;
-            throw error
-        }
-
-        let ultimoId = await ProductsModel.find().sort({ _id: -1 }).limit(1);
-        body.id = (ultimoId[0]?.id || 0) + 1;
-
-        const result = await ProductsModel.create(body);
-        return result
-    } catch (error) {
-        throw error
-    }
-}
-
-export const putProduct = async (id, body) => {
-    try {
-        const result = await ProductsModel.updateOne({ _id: id }, { $set: body });
-        if(!result){
-            const error = new Error('Producto no encontrado');
-            error.statusCode = 404;
-            throw error
-        }
-        return result
-    } catch (error) {
-        throw error
-    }
-}
-
-export const deleteProduct = async (id) => {
-    try {
-        const result = await ProductsModel.deleteOne({ _id: id });
-        if(!result){
-            const error = new Error('Producto no encontrado');
-            error.statusCode = 404;
-            throw error
-        }
-        return result
-    } catch (error) {
-        throw error
-    }
-}
-
-/* 
-// para subir los productos a la base de datos
-
-import dotenv from 'dotenv';
-import ProductManager from "../managers/productManager.js";
-const productosManager = new ProductManager('/data/products.json')
-import mongoose from "mongoose";
-import ProductsModel from "../models/Products.models.js";
-async function main() {
-
-    dotenv.config();
-    
-    //const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/";
-    const MONGO_URI = "mongodb://localhost:27017/ecommerce";
-    mongoose.connect(MONGO_URI, {
-        dbName: "ecommerce",
-    }).then(() => {
-        console.log("Base de datos conectada");
-    }).catch((error) => {
-        console.log(`Error al conectar a la base de datos ${error}`);
-    })
-
-    const productos = await productosManager.getProducts();
-    
-    try{
-        await ProductsModel.insertMany(productos);
-    }catch(error){
-        console.log(error);
-    }
-}
-
-main(); */
+export default ProductsController

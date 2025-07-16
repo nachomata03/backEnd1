@@ -1,95 +1,84 @@
-import ProductManager from "../../managers/productManager.js";
-const productosManager = new ProductManager('/data/products.json')
+import { parse } from "dotenv";
+import { getProductsService, getProductIdService, postProductService, putProductService, deleteProductService } from "../../services/fileSystem/product.fs.services.js";
 
 
-export const getProductsFs = async () => {
+export const getProducts = async (req, res) => {
     try {
-        console.log('getProductsFs');
-        const productos = await productosManager.getProducts();
-
-        if (!productos || productos.length === 0) {
-            const error = new Error('No hay productos disponibles');
-            error.statusCode = 404;
-            throw error;
-        }
-
-        return productos
+        const productos = await getProductsService();
+        res.json(productos);
     } catch (error) {
         console.log(error);
-        throw error;
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({
+            status: 'error',
+            message: error.message
+        });
     }
 }
 
-export const getProductByIdFs = async (id) => {
+export const getProductById = async (req, res) => {
     try {
-        const producto = await productosManager.getProductById(id);
-        if(!producto) {
-            const error = new Error('Producto no encontrado');
-            error.statusCode = 404;
-            throw error;
-        }
-        return producto;
+        const id = parseInt(req.params.pid);
+        const producto = await getProductIdService(id);
+        res.json(producto);
     } catch (error) {
         console.log(error);
-        throw error;
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({
+            status: 'error',
+            message: error.message
+        });
     }
 }
 
 
 
-export const createProductFs = async (product) => {
+export const postProduct = async (req, res) => {
     try {
-        if(!product.title || !product.description || !product.price || !product.thumbnails || !product.code || !product.stock){
-            const error = new Error('Todos los campos son obligatorios');
-            error.statusCode = 400;
-            throw error;
-        }
-
-        const newProduct = await productosManager.addProduct(product);
-
-        if(!newProduct) {
-            const error = new Error('Producto no creado');
-            error.statusCode = 404;
-            throw error;
-        }
-
-        return newProduct;
+        const product = req.body;
+        const newProduct = await postProductService(product);
+        res.json(newProduct);
     } catch (error) {
         console.log(error);
-        throw error;
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({
+            status: 'error',
+            message: error.message
+        });
     }
 }
 
 
 
-export const updateProductFs = async (id, newProduct) => {
+export const putProduct = async (req, res) => {
     try {
-        const productoActualizado = await productosManager.updateProduct(id, newProduct);
-        if(!productoActualizado) {
-            const error = new Error(`Producto con id ${id} no encontrado`);
-            error.statusCode = 404;
-            throw error;
-        }
-        return productoActualizado;
+        const id = parseInt(req.params.pid);
+        const newProduct = req.body;
+        const productoActualizado = await putProductService(id, newProduct);
+        res.json(productoActualizado);
     } catch (error) {
         console.log(error);
-        throw error;
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({
+            status: 'error',
+            message: error.message
+        });
     }
 }
 
 
 
-export const deleteProductFs = async (id) => {
+export const deleteProduct = async (req, res) => {
     try {
-        const productoEliminado = await productosManager.deleteProduct(id);
-        if(!productoEliminado) {
-            const error = new Error(`Producto con id ${id} no encontrado`);
-            error.statusCode = 404;
-            throw error;
-        }
-        return productoEliminado;
+        const id = parseInt(req.params.pid);
+        const productoEliminado = await deleteProductService(id);
+        res.json(productoEliminado);
     } catch (error) {
         console.log(error);
-        throw error;
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({
+            status: 'error',
+            message: error.message
+        });
     }
 }

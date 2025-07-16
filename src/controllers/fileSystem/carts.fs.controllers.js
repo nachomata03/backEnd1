@@ -1,106 +1,97 @@
-import CartManager from "../../managers/CartManager.js";
+import { parse } from "dotenv";
+import { getCartByIdService ,postCartService ,postProductToCartService, deleteProductFromCartService, deleteCartService, putCartService, putProductToCartService} from "../../services/fileSystem/cart.fs.services.js";
 
-const cartManager = new CartManager('/data/carts.json');
-
-export const getCartFs = async (id) => {
+export const getCartById = async (req, res) => {
     try {
-        const cart = await cartManager.getCartById(id);
-        if(!cart){
-            const error = new Error('Carrito no encontrado');
-            error.statusCode = 404;
-            throw error;
-        }
-        return cart;
+        const id = parseInt(req.params.cid);
+        const cart = await getCartByIdService(id);
+        res.json(cart);
     } catch (error) {
-        throw error;
+        console.log(error);
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 }
 
 
 
-export const postCartFs = async (body) => {
+export const postCart = async (req, res) => {
     try {
-        const cart = await cartManager.addCart(body);
-        if(!cart){
-            const error = new Error('Error al agregar el carrito');
-            error.statusCode = 500;
-            throw error;
-        }
-        return cart;
+        const body = req.body;
+        const cart = await postCartService(body);
+        res.json(cart);
     } catch (error) {
-        throw error;
+        console.log(error);
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 }
 
-export const postProductToCartFs = async (cartId, productId) => {
+export const postProductToCart = async (req, res) => {
     try{
-        const cart = await cartManager.addProductToCart(cartId, productId);
-        if(!cart){
-            const error = new Error('Error al agregar el carrito');
-            error.statusCode = 500;
-            throw error;
-        }
-        return cart;
+        const cid = parseInt(req.params.cid);
+        const pid = parseInt(req.params.pid);
+        const cart = await postProductToCartService(cid, pid);
+        res.json(cart);
     } catch (error) {
-        throw error;
+        console.log(error);
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 }
 
 
-export const deleteProductFromCartFs = async (cartId, productId) => {
+export const deleteProductFromCart = async (req, res) => {
     try{
-        const cart = await cartManager.deleteProductFromCart(cartId, productId);
-        if(!cart){
-            const error = new Error('Error al agregar el carrito');
-            error.statusCode = 500;
-            throw error;
-        }
-        return cart;
+        const cid = parseInt(req.params.cid);
+        const pid = parseInt(req.params.pid);
+        const cart = await deleteProductFromCartService(cid, pid);
+        res.json(cart);
     } catch (error) {
-        throw error;
+        console.log(error);
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 }
 
-export const deleteCartFs = async (id) => {
+export const deleteCart = async (req, res) => {
     try{
-        const cart = await cartManager.deleteCart(id);
-        if(!cart){
-            const error = new Error('Error al agregar el carrito');
-            error.statusCode = 500;
-            throw error;
-        }
-        return cart;
+        const id = parseInt(req.params.cid);
+        const cart = await deleteCartService(id);
+        res.json(cart);
     } catch (error) {
-        throw error;
+        console.log(error);
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 }
 
 
 
-export const putCartFs = async (id, body) => {
+export const putCart = async (req, res) => {
     try{
-        const cart = await cartManager.updateProductsFromCart(id, body);
-        if(!cart){
-            const error = new Error('Error al actualizar el carrito');
-            error.statusCode = 500;
-            throw error;
-        }
-        return cart;
+        const id = parseInt(req.params.cid);
+        const body = req.body;
+        const cart = await putCartService(id, body);
+        res.json(cart);
     }catch (error) {
-        throw error;
+        console.log(error);
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 }
 
-export const putQuantityCartFs = async (cartId, productId, quantity) => {
+export const putQuantityCart = async (req, res) => {
     try{
-        const cart = await cartManager.updateQuantityFromProd(cartId, productId, quantity);
-        if(!cart){
-            const error = new Error('Error al actualizar el carrito');
-            error.statusCode = 500;
-            throw error;
-        }
-        return cart;
+        const cartId = parseInt(req.params.cid);
+        const productId = parseInt(req.params.pid);
+        const quantity = parseInt(req.body.quantity);
+
+        const cart = await putProductToCartService(cartId, productId, quantity);
+        res.json(cart);
     }catch (error) {
-        throw error;
+        console.log(error);
+        const statusCode = error.statusCode || 500;
+        res.status(statusCode).json({ status: 'error', message: error.message });
     }
 }

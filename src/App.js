@@ -1,10 +1,7 @@
 import express from 'express';
 import handlebars from 'express-handlebars';
 
-import vistas from './routes/vistas.js';    
-import ProductsRouter from './routes/products.router.js';
-import CartsRouter from './routes/cart.router.js';
-import UsersRouter from './routes/users.router.js';
+import indexRouter from './routes/index.router.js';
 import { Server } from 'socket.io';
 import http from 'http';
 import websocket from './websocket.js';
@@ -23,7 +20,6 @@ import cookieParser from 'cookie-parser';
 //import session from 'express-session';
 //import MongoStore from 'connect-mongo';
 
-import sessionsRouter from './routes/sessions.router.js';
 
 import passport from 'passport';
 import initializePassport from './config/passport/config.js';
@@ -62,33 +58,12 @@ app.set('view engine', 'handlebars'); //que motor de plantillas usamos view engi
 app.use(express.static(join(__dirname, 'public')));  //donde se alojan los archivos de handlebars
 
 
-app.use('/', vistas); //configuro la ruta y lo que se muestra en vistas
-
-//hacemos que el servidor use el router y le ponemos la ruta y ahi usa todos los metodos
-app.use('/api/products', ProductsRouter);
-//hacemos que el servidor use el router y le ponemos la ruta y ahi usa todos los metodos
-app.use('/api/carts', CartsRouter);
-
 app.use('/productsFs', productFileSystemRouter);
 app.use('/cartFs', CartFileSystemRouter);
 
-app.use('/users', UsersRouter);
 
-/* app.use(session({
-    secret: process.env.SECRET_SESSION,
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-        httpOnly: true
-    },
-    store: MongoStore.create({
-        mongoUrl: "mongodb://localhost:27017/sessions",
-    })
-})) */
 app.use(cookieParser());
 initializePassport();
 app.use(passport.initialize());
-//app.use(passport.session());
 
-
-app.use('/api/sessions', sessionsRouter);
+app.use('/api', indexRouter)
