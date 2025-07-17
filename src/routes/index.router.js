@@ -10,7 +10,7 @@ const indexRouter = Router();
 indexRouter.use('/user', userRouter);
 indexRouter.use('/carts', cartRouter);
 indexRouter.use('/products', productRouter);
-indexRouter.use('/session', sessionsRouter);
+indexRouter.use('/sessions', sessionsRouter);
 indexRouter.use('/', vistaRouter);
 
 export default indexRouter

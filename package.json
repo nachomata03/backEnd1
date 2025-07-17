@@ -4,7 +4,9 @@
   "main": "App.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "devfs": "cross-env NODE_ENV=devfs nodemon src/App.js",
+    "test": "cross-env NODE_ENV=test nodemon src/App.js",
+    "start": "cross-env NODE_ENV=production node src/App.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +16,7 @@
     "body-parser": "^2.2.0",
     "connect-mongo": "^5.1.0",
     "cookie-parser": "^1.4.7",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-handlebars": "^8.0.1",

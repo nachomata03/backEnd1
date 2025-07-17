@@ -1,5 +1,7 @@
 import passportJwt from "passport-jwt";
-import UserModel from "../../models/Users.models.js";
+import config from "../../config/index.js";
+
+const {JWT_SECRET} = config
 
 const JwtStrategy = passportJwt.Strategy;
 const ExtractJwt = passportJwt.ExtractJwt;
@@ -28,7 +30,7 @@ async function verifyJwt(jwt_payload, done) {
 
 const jwt = new JwtStrategy({
     jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
-    secretOrKey: process.env.JWT_SECRET}
+    secretOrKey: JWT_SECRET}
 , verifyJwt)
 
 export default jwt

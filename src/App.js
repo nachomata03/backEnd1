@@ -8,9 +8,11 @@ import websocket from './websocket.js';
 import productFileSystemRouter from './routes/productFileSystem.router.js';
 import CartFileSystemRouter from './routes/cartFileSystem.router.js';
 
-import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
+import config from './config/index.js';
+
+const {PORT, MONGO_URI} = config;
 
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -28,9 +30,9 @@ import initializePassport from './config/passport/config.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config();
 
-const MONGO_URI = /* process.env.MONGO_URI || */ "mongodb://localhost:27017/";
+
+//const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/";
 
 mongoose.connect(MONGO_URI, {
     dbName: "ecommerce",
@@ -40,7 +42,7 @@ mongoose.connect(MONGO_URI, {
     console.log(`Error al conectar a la base de datos ${error}`);
 })
 
-const puerto = process.env.PORT || 8080;
+const puerto = PORT;
 const app = express(); //inicializo el servidor de express
 const httpServer = http.createServer(app); //creo el servidor pasandole el servidor de express
 const io = new Server(httpServer); //servidor de sockets

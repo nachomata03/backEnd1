@@ -2,8 +2,9 @@ import { Strategy as GitHubStrategy } from "passport-github2";
 import UserModel from "../../models/Users.models.js";
 import { generateToken } from "../../utils.js";
 import CartModel from '../../models/Carts.models.js';
-import dotenv from 'dotenv';
-dotenv.config();
+import config from "../../config/index.js";
+
+const {GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET} = config;
 
 async function verifyGitHub (accessToken, refreshToken, profile, done) {
     console.log(`profile: ${JSON.stringify(profile, null, 2)}`);
@@ -47,8 +48,8 @@ async function verifyGitHub (accessToken, refreshToken, profile, done) {
 }
 
 const github = new GitHubStrategy({
-    clientID: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    clientID: GITHUB_CLIENT_ID,
+    clientSecret: GITHUB_CLIENT_SECRET,
     callbackURL: "http://localhost:8080/api/sessions/githubcallback",
     scope: ['user:email']
 }, verifyGitHub);
