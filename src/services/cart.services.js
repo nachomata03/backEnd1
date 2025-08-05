@@ -1,189 +1,179 @@
-import CartModel from "../models/Carts.models.js";
-import ProductsModel from "../models/Products.models.js";
-
-export const getCartByIdServices = async (id) => {
-    try {
-        const cart = await CartModel.findById(id).populate('products.id');
-        if (!cart){
-            const error = new Error('Carrito no encontrado');
-            error.statusCode = 404;
-            throw error;
-        }
-        return cart
-    } catch (error) {
-        throw error
+export default class CartsService {
+    constructor(productsRepository, cartsRepository) {
+        this.productsRepository = productsRepository;
+        this.cartsRepository = cartsRepository
     }
-}
+    async getCart(id) {
+        try {
+            const cart = await this.cartsRepository.getCart(id);
 
-export const postCartServices = async (products) => {
-    try {
-        const idCart = await CartModel.countDocuments();
-        const cartId = idCart + 1; // Genera el ID del carrito contando cuando carritos hay
+            if (!cart){
+                const error = new Error('Carrito no encontrado');
+                error.statusCode = 404;
+                throw error;
+            }
+            return cart
+        } catch (error) {
+            throw error
+        }
+    }
+    async createCart(products){
+        try {
+            const productsToInsert = [];
 
-        const productsToInsert = [];
+            for (const prod of products) {
+                const foundProduct = await this.productsRepository.getProduct(prod.id); // Busca por el ID del producto
 
-        for (const prod of products) {
-            const foundProduct = await ProductsModel.findOne({ id: prod.id }); // Busca por el ID del producto
+                if (!foundProduct) {
+                    const error = new Error(`No se encontró el producto con ID: ${prod.id}`);
+                    error.statusCode = 400;
+                    throw error
+                }
 
-            if (!foundProduct) {
-                const error = new Error(`No se encontró el producto con ID: ${prod.id}`);
-                error.statusCode = 400;
+                productsToInsert.push({
+                    id: foundProduct._id? foundProduct._id : foundProduct.id, // Usar el _id de Mongoose como referencia
+                    quantity: prod.quantity,
+                });
+            }
+            return await this.cartsRepository.createCart(productsToInsert);
+        } catch (error) {
+            throw error
+        }
+    }
+    async createProductToCart(cid, pid){
+        try {
+            const cart = await this.cartsRepository.getCart(cid)
+            const product = await this.productsRepository.getProduct(pid)
+            if (!cart) {
+                const error = new Error('Carrito no encontrado');
+                error.statusCode = 404;
+                throw error
+            }
+            if (!product) {
+                const error = new Error('Producto no encontrado');
+                error.statusCode = 404;
+                throw error
+            }
+            const productIndex = cart.products.findIndex(p => String(p.id) == String(product._id ? product._id : product.id)); //Compara objectIds
+            
+            if (productIndex > -1) {
+                // El producto ya está en el carrito, aumentar la cantidad
+                cart.products[productIndex].quantity += 1;
+                const cartSaved = await this.cartsRepository.createProductToCart(cart)
+                return cartSaved
+            } else {
+                // El producto no está en el carrito, agregarlo
+                cart.products.push({ id: product._id ? product._id : product.id, quantity: 1 });
+                const cartSaved = await this.cartsRepository.createProductToCart(cart);
+                return cartSaved
+            }
+        } catch (error) {
+            throw error
+        }
+    }
+    async updateCart(id, products){
+        try{
+            const cart = await this.cartsRepository.getCart(id); //busca el carrito
+            
+            if (!cart) {
+                const error = new Error('El carrito no existe');
+                error.statusCode = 404;
+                throw error
+            }
+            const productsToInsert = [];
+            for (const prod of products){
+                const foundProduct = await this.productsRepository.getProduct(prod.id);
+                
+
+                if (!foundProduct){
+                    const error = new Error(`No se encontró el producto con ID: ${prod.id}`);
+                    error.statusCode = 400;
+                    throw error
+                }
+                productsToInsert.push({
+                    id: foundProduct._id ? foundProduct._id : foundProduct.id,
+                    quantity: prod.quantity,
+                });
+
+            } 
+            cart.products = productsToInsert
+            const cartSaved = this.cartsRepository.updateCart(cart);
+            return cartSaved
+        }catch (error) {
+            throw error
+        }
+    }
+    async updateProductFromCart(cid, pid, quantity){
+        try {
+
+            const cart = await this.cartsRepository.getCart(cid); //busca el carrito
+            
+            if (!cart){
+                const error = new Error('El carrito no existe');
+                error.statusCode = 404;
                 throw error
             }
 
-            productsToInsert.push({
-                id: foundProduct._id, // Usar el _id de Mongoose como referencia
-                quantity: prod.quantity,
-            });
-        }
+            const product = await this.productsRepository.getProduct(pid); //busca el producto
 
-        const createdCart = await CartModel.create({
-            id: cartId,
-            products: productsToInsert,
-        });
-
-        const respuesta = await CartModel.findById(createdCart._id).populate('products.id');
-        return respuesta
-    } catch (error) {
-        throw error
-    }
-}
-
-export const postProductToCartServices = async (cid, pid) => {
-    try {
-        const cart = await CartModel.findById(cid)
-        const product = await ProductsModel.findOne({ id: pid })
-
-        if (!cart) {
-            const error = new Error('Carrito no encontrado');
-            error.statusCode = 404;
-            throw error
-        }
-        if (!product) {
-            const error = new Error('Producto no encontrado');
-            error.statusCode = 404;
-            throw error
-        }
-        const productIndex = cart.products.findIndex(p => String(p.id) === String(product._id)); //Compara objectIds
-
-        if (productIndex > -1) {
-            // El producto ya está en el carrito, aumentar la cantidad
-            cart.products[productIndex].quantity += 1;
-            cart.markModified('products'); // avisa que se modifican los productos
-            await cart.save();
+            if (!product){
+                const error = new Error('El producto no existe');
+                error.statusCode = 404;
+                throw error
+            }
+            const productIndex = cart.products.findIndex(p => String(p.id) == String(pid)); //Compara objectIds
+            
+            if (productIndex > -1) {
+                cart.products[productIndex].quantity = quantity;
+                await this.cartsRepository.updateProductFromCart(cart, productIndex);
+            }else{
+                const error = new Error('El producto no existe en el carrito');
+                error.statusCode = 404;
+                throw error
+            }
             return cart
-        } else {
-            // El producto no está en el carrito, agregarlo
-            cart.products.push({ id: product._id, quantity: 1 });
-            await cart.save();
-            return cart
-        }
-    } catch (error) {
-        throw error
-    }
-}
-
-export const putCartServices = async (id, newProducts) => {
-    try{
-        const cart = await CartModel.findById(id);
-        
-        if (!cart) {
-            const error = new Error('El carrito no existe');
-            error.statusCode = 404;
+        }catch (error) {
             throw error
         }
-    
-        for (const prod of newProducts){
-            const foundProduct = await ProductsModel.findOne({ id: prod.id });
+    }
+    async deleteProductFromCart(cid, pid){
+        try {
+            const cart = await this.cartsRepository.getCart(cid); //busca el carrito
 
-            if (!foundProduct){
-                const error = new Error(`No se encontró el producto con ID: ${prod.id}`);
-                error.statusCode = 400;
+            if (!cart) {
+                const error = new Error('El carrito no existe');
+                error.statusCode = 404;
+                throw error
+            }
+            const productIndex = cart.products.findIndex(p => String(p.id) == String(pid)); //Compara objectIds
+
+            if (productIndex > -1) {
+                cart.products.splice(productIndex, 1);
+                await this.cartsRepository.deleteProductFromCart(cart);
+                return cart
+            } else {
+                const error = new Error('El producto no existe en el carrito');
+                error.statusCode = 404;
+                throw error
+            }
+        }catch (error) {
+            throw error
+        }
+    }
+    async cleanCart(id){
+        try {
+            const cart = await this.cartsRepository.getCart(id);
+
+            if (!cart) {
+                const error = new Error('El carrito no existe');
+                error.statusCode = 404;
                 throw error
             }
 
-            cart.products.push({
-                id: foundProduct._id,
-                quantity: prod.quantity,
-            });
-        } 
+            return await this.cartsRepository.cleanCart(id);
 
-        cart.markModified('products');
-        await cart.save();
-        return cart
-    }catch (error) {
-        throw error
-    }
-}
-
-export const putProductToCartServices = async (cid, pid, quantity) => {
-    try {
-        const cart = await CartModel.findOne({ _id: cid }) //busca el carrito
-        
-        if (!cart){
-            const error = new Error('El carrito no existe');
-            error.statusCode = 404;
+        }catch (error) {
             throw error
         }
-
-        const product = await ProductsModel.findById(pid); //busca el producto
-        
-        if (!product){
-            const error = new Error('El producto no existe');
-            error.statusCode = 404;
-            throw error
-        }
-        const productIndex = cart.products.findIndex(p => String(p.id) === String(pid)); //Compara objectIds
-        
-        if (productIndex > -1) {
-            cart.products[productIndex].quantity = quantity;
-            cart.markModified('products');
-            await cart.save();
-        }
-        return cart
-    }catch (error) {
-        throw error
-    }
-}
-
-export const deleteProductFromCartServices = async (cid, pid) => {
-    try {
-        const cart = await CartModel.findById(cid) //busca el carrito
-
-        if (!cart) {
-            const error = new Error('El carrito no existe');
-            error.statusCode = 404;
-            throw error
-        }
-        const productIndex = cart.products.findIndex(p => String(p.id) === String(pid)); //Compara objectIds
-
-        if (productIndex > -1) {
-            cart.products.splice(productIndex, 1);
-            await cart.save();
-            return cart
-        } else {
-            const error = new Error('El producto no existe en el carrito');
-            error.statusCode = 404;
-            throw error
-        }
-    }catch (error) {
-        throw error
-    }    
-}
-
-export const deleteCartServices = async (id) => {
-    try {
-        const cart = await CartModel.findById(id)
-
-        if (!cart) {
-            const error = new Error('El carrito no existe');
-            error.statusCode = 404;
-            throw error
-        }
-
-        return await CartModel.deleteOne({ _id: id });
-
-    }catch (error) {
-        throw error
     }
 }

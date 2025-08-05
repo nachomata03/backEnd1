@@ -6,7 +6,7 @@ const cartsController = new CartsController();
 const router = Router();
 
 // /api/carts/:cid TRAE UN PRODUCTO DEL CARRITO POR ID
-router.get('/:pid', cartsController.getCart);
+router.get('/:cid', cartsController.getCart);
 
 // /api/carts CREA UN NUEVO CARRITO
 router.post('/', cartsController.createCart);
@@ -24,7 +24,7 @@ router.put('/:cid/products/:pid', cartsController.updateProductFromCart)
 router.delete('/:cid/products/:pid', cartsController.deleteProductFromCart)
 
 // /api/carts/:cid ELIMINA LOS PRODUCTOS DEL CARRITO
-router.delete('/:cid', cartsController.deleteCart)
+router.delete('/:cid', cartsController.cleanCart)
 
 
 export default router

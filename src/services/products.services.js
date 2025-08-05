@@ -1,63 +1,72 @@
-import ProductsModel from "../models/Products.models.js";
-
-export const getProductsServices = async () => {
-    try {
-        const products = await ProductsModel.find();
-        if (!products){
-            const error = new Error('Productos no encontrados');
-            error.statusCode = 404;
-            throw error
-        }
-        return products
-    } catch (error) {
-        throw error
+export default class ProductsService {
+    constructor(repository){
+        this.repository = repository
     }
-}
-
-export const getProductIdServices = async (id) => {
-    try {
-        const product = await ProductsModel.findById(id);
-        if (!product){
-            const error = new Error('Producto no encontrado');
-            error.statusCode = 404;
+    async getProducts() {
+        try {
+            const products = await this.repository.getProducts();
+            if (!products){
+                const error = new Error('Productos no encontrados');
+                error.statusCode = 404;
+                throw error
+            }
+            return products
+        } catch (error) {
             throw error
         }
-        return product
-    } catch (error) {
-        throw error
     }
-}
 
-export const postProductServices = async (body) => {
-    try {
-        console.log(body);
-        if(!body.title || !body.description || !body.code || !body.price || !body.stock || !body.discount || !body.category || !body.thumbnails || !body.status) {
-            const error = new Error('Todos los campos son obligatorios');
-            error.statusCode = 400;
+    async getProduct(id) {
+        try {
+            const product = await this.repository.getProduct(id);
+            if (!product){
+                const error = new Error('Producto no encontrado');
+                error.statusCode = 404;
+                throw error
+            }
+            return product
+        } catch (error) {
             throw error
         }
-        body.price = parseFloat(body.price);
-        body.stock = parseInt(body.stock);
-        body.discount = parseFloat(body.discount);
-
-        if (isNaN(body.price) || isNaN(body.stock) || isNaN(body.discount)) {
-            const error = new Error('El precio, stock y descuento deben ser números válidos');
-            error.statusCode = 400;
-            throw error
-        }
-
-        let ultimoId = await ProductsModel.find().sort({ _id: -1 }).limit(1);
-        body.id = (ultimoId[0]?.id || 0) + 1;
-
-        const result = await ProductsModel.create(body);
-        return result
-    } catch (error) {
-        throw error
     }
-}
-export const    putProductServices = async (id, body) => {
+    async createProduct(body) {
+        try {
+            if(!body.title || !body.description || !body.code || !body.price || !body.stock || !body.discount || !body.category || !body.thumbnails || !body.status) {
+                const error = new Error('Todos los campos son obligatorios');
+                error.statusCode = 400;
+                throw error
+            }
+            body.price = parseFloat(body.price);
+            body.stock = parseInt(body.stock);
+            body.discount = parseFloat(body.discount);
+
+            if (isNaN(body.price) || isNaN(body.stock) || isNaN(body.discount)) {
+                const error = new Error('El precio, stock y descuento deben ser números válidos');
+                error.statusCode = 400;
+                throw error
+            }
+            const result = await this.repository.createProduct(body);
+            return result
+        } catch (error) {
+            throw error
+        }
+    }
+    async updateProduct(id, body) {
+            try {
+                const result = await this.repository.updateProduct(id, body);
+                if(!result){
+                    const error = new Error('Producto no encontrado');
+                    error.statusCode = 404;
+                    throw error
+                }
+                return result
+            } catch (error) {
+                throw error
+            }
+    }
+    async deleteProduct(id) {
     try {
-        const result = await ProductsModel.updateOne({ _id: id }, { $set: body });
+        const result = await this.repository.deleteProduct(id);
         if(!result){
             const error = new Error('Producto no encontrado');
             error.statusCode = 404;
@@ -67,21 +76,9 @@ export const    putProductServices = async (id, body) => {
     } catch (error) {
         throw error
     }
-}
-
-export const deleteProductServices = async (id) => {
-    try {
-        const result = await ProductsModel.deleteOne({ _id: id });
-        if(!result){
-            const error = new Error('Producto no encontrado');
-            error.statusCode = 404;
-            throw error
-        }
-        return result
-    } catch (error) {
-        throw error
     }
 }
+
 
 
 /* 

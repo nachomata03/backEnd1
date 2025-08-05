@@ -1,4 +1,4 @@
-import ProductManager from './managers/productManager.js';
+import ProductManager from './repository/dao/fs/managers/productManager.js';
 
 const productosManager = new ProductManager('./data/products.json');
 

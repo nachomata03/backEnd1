@@ -7,7 +7,7 @@ const __dirname = dirname(__filename);
 
 class productManager {
     constructor(filepath) {
-        this.filepath = join(__dirname, '..', filepath);
+        this.filepath = join(__dirname, '../../../../', filepath);
     }
 
     async readFile() {
@@ -78,9 +78,9 @@ class productManager {
     async updateProduct(id, prod){
         try {
             const productos = await this.readFile();
-            const productoActualizado = productos.findIndex(producto => producto.id === id);
+            const productoActualizado = productos.findIndex(producto => producto.id == id);
 
-            if (productoActualizado === -1) return console.log(`El producto con el id ${id} no existe`);
+            if (productoActualizado == -1) return console.log(`El producto con el id ${id} no existe`);
 
             productos[productoActualizado] = {...productos[productoActualizado], ...prod}
             
@@ -97,7 +97,7 @@ class productManager {
     async getProductById(id) {
         try {
             const productos = await this.readFile();
-            const findProduct = productos.find(producto => producto.id === id);
+            const findProduct = productos.find(producto => producto.id == id);
             if (!findProduct) return console.log(`El producto con el id ${id} no existe`);
             return findProduct;
         } catch (error) {
@@ -109,10 +109,9 @@ class productManager {
         try {
             const productos = await this.readFile();
 
-            const findProduct = productos.find(producto => producto.id === id);
+            const findProduct = productos.find(producto => producto.id == id);
             if (!findProduct) return console.log(`El producto con el id ${id} no existe`);
-
-            const updatedProducts = productos.filter(producto => producto.id !== id);
+            const updatedProducts = productos.filter(producto => producto.id != id);
             await fs.writeFile(this.filepath, JSON.stringify(updatedProducts, null, 2), 'utf-8');
             return productos.length;
         } catch (error) {

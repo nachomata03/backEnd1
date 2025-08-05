@@ -5,14 +5,12 @@ import indexRouter from './routes/index.router.js';
 import { Server } from 'socket.io';
 import http from 'http';
 import websocket from './websocket.js';
-import productFileSystemRouter from './routes/productFileSystem.router.js';
-import CartFileSystemRouter from './routes/cartFileSystem.router.js';
 
 import mongoose from 'mongoose';
 
 import config from './config/index.js';
 
-const {PORT, MONGO_URI} = config;
+const {PORT, MONGO_URI, STORAGE} = config;
 
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -30,17 +28,17 @@ import initializePassport from './config/passport/config.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-
-
-//const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/";
-
-mongoose.connect(MONGO_URI, {
+if (STORAGE === 'MONGODB' || STORAGE === 'MONGOATLAS'){
+    mongoose.connect(MONGO_URI, {
     dbName: "ecommerce",
-}).then(() => {
-    console.log("Base de datos conectada");
-}).catch((error) => {
-    console.log(`Error al conectar a la base de datos ${error}`);
-})
+    }).then(() => {
+        console.log("Base de datos conectada");
+    }).catch((error) => {
+        console.log(`Error al conectar a la base de datos ${error}`);
+    })
+}else{
+    console.log('Usando persistencia en File System.');
+}
 
 const puerto = PORT;
 const app = express(); //inicializo el servidor de express
@@ -58,10 +56,6 @@ app.engine('handlebars', handlebars.engine()); //inicio de handlebars
 app.set('views', join(__dirname, '/' ,'views')); //direccion de la plantillas de handlebars y como se llama la carpeta
 app.set('view engine', 'handlebars'); //que motor de plantillas usamos view engine y handlebars
 app.use(express.static(join(__dirname, 'public')));  //donde se alojan los archivos de handlebars
-
-
-app.use('/productsFs', productFileSystemRouter);
-app.use('/cartFs', CartFileSystemRouter);
 
 
 app.use(cookieParser());

@@ -1,10 +1,10 @@
-import { getUsersServices, getUserIdServices, postUsersServices, putUsersServices, deleteUsersServices } from "../services/users.services.js";
+import { usersService } from '../services/index.js';
 
 class UsersController{
 
     async getUsers(req, res) {
         try{
-            const result = await getUsersServices()
+            const result = await usersService.getUsers()
             res.json({status: 'success', response: result})
         } catch (error) {
             const statusCode = error.statusCode || 500;
@@ -13,9 +13,9 @@ class UsersController{
     }
 
     async getUser(req, res) {
+        const id = req.params.id;
         try{
-            const id = req.params.id;
-            const result = await getUserIdServices(id)
+            const result = await usersService.getUser(id)
             res.json({status: 'success', response: result})
         } catch (error) {
             const statusCode = error.statusCode || 500;
@@ -24,14 +24,14 @@ class UsersController{
     }
 
     async createUser(req, res){
+        const body = req.body;
         try{
-            const body = req.body;
             if(!body.email || !body.password || !body.firstName || !body.lastName || !body.age || !body.role || !body.state){
                 const error = new Error('Todos los campos son obligatorios');
                 error.statusCode = 409; // Conflicto
                 throw error;
             }
-            const result = await postUsersServices(body)
+            const result = await usersService.createUser(body)
             res.status(201).json({ status: 'success', response: result });
         } catch (error) {
             const statusCode = error.statusCode || 500;
@@ -40,10 +40,10 @@ class UsersController{
     }
 
     async updateUser(req, res){
+        const id = req.params.id;
+        const body = req.body;
         try {
-            const id = req.params.id;
-            const body = req.body;
-            const result = await putUsersServices(id, body);
+            const result = await usersService.updateUser(id, body);
             res.json({ status: 'success', response: result });
         } catch (error) {
             const statusCode = error.statusCode || 500;
@@ -52,9 +52,9 @@ class UsersController{
     }
 
     async deleteUser(req, res){
+        const id = req.params.id;
         try{
-            const id = req.params.id;
-            const result = await deleteUsersServices(id)
+            const result = await usersService.deleteUser(id)
             res.json({status: 'success', response: result})
         }catch(error){
             const statusCode = error.statusCode || 500;

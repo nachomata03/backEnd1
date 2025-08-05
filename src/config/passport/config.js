@@ -1,7 +1,6 @@
 import passport from "passport";
 import github from "./githubStrategy.js";
 import { loginLocal, registerLocal } from "./localStrategy.js";
-import UserModel from "../../models/Users.models.js";
 import jwt from "./jwtStrategy.js";
 
 const initializePassport = () => {

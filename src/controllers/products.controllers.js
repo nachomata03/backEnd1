@@ -1,11 +1,10 @@
-import {getProductsServices, getProductIdServices, postProductServices, putProductServices, deleteProductServices } from "../services/products.services.js"
+import { productsService } from '../services/index.js';
 
 class ProductsController {
     // Método para obtener todos los productos
     async getProducts(req, res) {
         try {
-            
-            const products = await getProductsServices();
+            const products = await productsService.getProducts();
             res.json(products);
         } catch (error) {
             console.error("Error al obtener productos:", error); 
@@ -16,12 +15,12 @@ class ProductsController {
 
     // Método para obtener un producto por ID
     async getProduct(req, res) {
+        const id = req.params.pid;
         try {
-            const id = req.params.pid;
-            const product = await getProductIdServices(id);
+            const product = await productsService.getProduct(id);
             res.json(product);
         } catch (error) {
-            console.error("Error al obtener producto por ID:", error); 
+            console.error("Error al obtener producto por ID", error); 
             const statusCode = error.statusCode || 500;
             res.status(statusCode).json({ status: 'error', message: error.message });
         }
@@ -29,9 +28,9 @@ class ProductsController {
 
     // Método para crear un nuevo producto
     async createProduct(req, res) {
+        const body = req.body
         try {
-            const body = req.body
-            const result = await postProductServices(body);
+            const result = await productsService.createProduct(body);
             res.send({ message: 'El producto se cargo correctamente', producto: result })
         } catch (error) {
             console.error("Error al crear producto:", error);
@@ -42,10 +41,10 @@ class ProductsController {
 
     // Método para actualizar un producto existente
     async updateProduct(req, res) {
+        const id = req.params.pid
+        const body = req.body; 
         try{
-            const id = req.params.pid
-            const body = req.body; 
-            const productoActualizado = await putProductServices(id, body);
+            const productoActualizado = await productsService.updateProduct(id, body);
             res.send({ message: 'El producto se actualizó correctamente', producto: productoActualizado })
         } catch (error) {
             console.error("Error al actualizar producto:", error);
@@ -56,9 +55,9 @@ class ProductsController {
 
     // Método para eliminar un producto
     async deleteProduct(req, res) {
+        const id = req.params.pid;
         try {
-            const id = req.params.pid;
-            const producto = await deleteProductServices(id);
+            const producto = await productsService.deleteProduct(id);
             res.send({message: `El producto se elimino correctamente`, producto: producto})
         } catch (error) {
             console.error("Error al eliminar producto:", error);

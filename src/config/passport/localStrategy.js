@@ -1,9 +1,9 @@
 import { Strategy } from "passport-local";
-import UserModel from "../../models/Users.models.js";
+import UserModel from "../../repository/dao/mongo/models/Users.models.js";
 import { createHash, isValidPassword } from "../../utils.js";
-import CartModel from "../../models/Carts.models.js";
+import CartModel from "../../repository/dao/mongo/models/Carts.models.js";
 import {generateToken} from "../../utils.js"
-
+import userDto from "../../dto/user.dto.js";
 
 async function verifyRegister (req, username, password, done) {
     const user = {...req.body}
@@ -42,11 +42,10 @@ async function verifyLogin (username, password, done){
         const passwordOk = await isValidPassword(user, password)
         if(!passwordOk) return done(null, false, {message: 'Credenciales incorrectas'})
         
-        const payload = {username: user.email, id: user._id, role: user.role, firstName: user.firstName, lastName: user.lastName};
+        /* const payload = {username: user.email, id: user._id, role: user.role, firstName: user.firstName, lastName: user.lastName}; */
+        const payload = new userDto(user)
         const token = await generateToken(payload)
         if(!token) return done(null, false, {message: 'No se pudo generar el token'})
-        /* para cuando se usa session
-        return done(null, user) */
         return done(null, token)
     }catch(error){
         console.log(error)
