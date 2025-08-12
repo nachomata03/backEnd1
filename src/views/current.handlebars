@@ -28,11 +28,11 @@
             <p>Usuario no autorizado, por favor inicie sesión</p>
         </div>
         {{/if}}
-
+        {{!-- {{log user}} --}}
         <div class="space-y-4">
-            <div><span class="font-semibold">Nombre:</span> {{user.firstName}}</div>
-            <div><span class="font-semibold">Apellido:</span> {{user.lastName}}</div>
-            <div><span class="font-semibold">Email:</span> {{user.username}}</div>
+            <div><span class="font-semibold">Nombre:</span> {{user.first_name}}</div>
+            <div><span class="font-semibold">Apellido:</span> {{user.last_name}}</div>
+            <div><span class="font-semibold">Email:</span> {{user.email}}</div>
             <div><span class="font-semibold">ID usuario:</span> {{user.id}}</div>
             <div><span class="font-semibold">Rol:</span> {{user.role}}</div>
             <div><span class="font-semibold">ID carrito:</span> {{user.cart}}</div>

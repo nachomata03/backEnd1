@@ -1,5 +1,6 @@
 import { Router } from "express";
 import ProductsController from "../controllers/products.controllers.js";
+import { authMiddleware, isAdmin } from "../utils.js";
 
 const productsController = new ProductsController();
 
@@ -12,13 +13,15 @@ router.get('/', productsController.getProducts);
 router.get('/:pid', productsController.getProduct);
 
 // /api/products AGREGA UN PRODUCTO
-router.post('/', productsController.createProduct);
+router.post('/', authMiddleware, isAdmin, productsController.createProduct);
 
 // /api/products/:pid ACTUALIZA UN PRODUCTO
-router.put('/:pid', productsController.updateProduct);
+router.put('/:pid', authMiddleware, isAdmin,productsController.updateProduct);
 
 // /api/products/:pid ELIMINA UN PRODUCTO
-router.delete('/:pid', productsController.deleteProduct);
+router.delete('/:pid', authMiddleware, isAdmin, productsController.deleteProduct);
+
+router.get('/:pid/edit', authMiddleware, isAdmin, productsController.getEditProduct);
 
 
 export default router;

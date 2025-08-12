@@ -31,7 +31,7 @@ class ProductsController {
         const body = req.body
         try {
             const result = await productsService.createProduct(body);
-            res.send({ message: 'El producto se cargo correctamente', producto: result })
+            res.redirect('/api/all-products')
         } catch (error) {
             console.error("Error al crear producto:", error);
             const statusCode = error.statusCode || 500;
@@ -45,7 +45,7 @@ class ProductsController {
         const body = req.body; 
         try{
             const productoActualizado = await productsService.updateProduct(id, body);
-            res.send({ message: 'El producto se actualizó correctamente', producto: productoActualizado })
+            res.redirect('/api/all-products')
         } catch (error) {
             console.error("Error al actualizar producto:", error);
             const statusCode = error.statusCode || 500;
@@ -58,12 +58,31 @@ class ProductsController {
         const id = req.params.pid;
         try {
             const producto = await productsService.deleteProduct(id);
-            res.send({message: `El producto se elimino correctamente`, producto: producto})
+            res.redirect('/api/all-products')
         } catch (error) {
             console.error("Error al eliminar producto:", error);
             const statusCode = error.statusCode || 500;
             res.status(statusCode).json({ status: 'error', message: error.message });
         }
+    }
+
+    async getEditProduct(req, res) {
+        const id = req.params.pid;
+        try {
+            const producto = await productsService.getProduct(id);
+            if(!producto) {
+                return res.status(404).json({ status: 'error', message: 'Producto no encontrado' });
+            }
+            res.render('editProduct', {producto: producto, title: 'editProduct'})
+        } catch (error) {
+            console.error("Error al obtener producto para editar:", error);
+            const statusCode = error.statusCode || 500;
+            res.status(statusCode).json({ status: 'error', message: error.message });
+        }
+    }
+
+    getNewProduct(req, res) {
+        res.render('newProduct', {title: 'newProduct'})
     }
 }
 

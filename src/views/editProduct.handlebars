@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{title}}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto py-10">
+        <h1 class="text-xl font-semibold text-center text-gray-800 mb-8">Editar Producto: {{producto.title}}</h1>
+
+        <form action="/api/products/{{producto._id}}" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <input type="hidden" name="_method" value="PUT">
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
+                    Título:
+                </label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="title" name="title" type="text" value="{{producto.title}}">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
+                    Descripción:
+                </label>
+                <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="description" name="description" >{{producto.description}}</textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="price">
+                    Precio:
+                </label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="price" name="price" type="number" value="{{producto.price}}" step="0.01" min="0" >
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="stock">
+                    Stock:
+                </label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="stock" name="stock" type="number" value="{{producto.stock}}" min="0">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="category">
+                    Categoría:
+                </label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="category" name="category" type="text" value="{{producto.category}}" >
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="thumbnails">
+                    Thumbnails (URLs separadas por coma):
+                </label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="thumbnails" name="thumbnails" type="text" value="{{producto.thumbnails}}">
+                <p class="text-gray-600 text-xs italic">Ejemplo: url1.com, url2.com</p>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="discount">
+                    Descuento (%):
+                </label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="discount" name="discount" type="number" value="{{producto.discount}}" min="0" max="100">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="status">
+                    Estado:
+                </label>
+                <div class="relative">
+                    <select class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 py-2 px-4 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline" id="status" name="status" >
+                        <option value="true" {{#if producto.status}}selected{{/if}}>Activo</option>
+                        <option value="false" {{#unless producto.status}}selected{{/unless}}>Inactivo</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg class="fill-current h-4 w-4" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="code">
+                    Código:
+                </label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="code" name="code" type="text" value="{{producto.code}}" >
+            </div>
+
+            <div class="flex items-center justify-between">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                    Actualizar Producto
+                </button>
+                <a href="/all-products" class="inline-block align-baseline font-semibold text-sm text-blue-500 hover:text-blue-800">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

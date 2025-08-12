@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+</head>
+<body>
+    <h1 class="text-3xl font-bold mb-6 text-center">Agregar Producto</h1>
+
+    <form action="/api/products" method="POST" class="max-w-lg mx-auto bg-white p-6 rounded-2xl shadow space-y-4">
+
+        <div>
+            <label class="block font-medium">Título:</label>
+            <input type="text" name="title" required
+                class="w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-indigo-200">
+        </div>
+
+        <div>
+            <label class="block font-medium">Descripción:</label>
+            <textarea name="description" required
+                class="w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-indigo-200"></textarea>
+        </div>
+
+        <div>
+            <label class="block font-medium">Precio:</label>
+            <input type="number" step="0.01" name="price" required
+                class="w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-indigo-200">
+        </div>
+
+        <div>
+            <label class="block font-medium">Stock:</label>
+            <input type="number" name="stock" required
+                class="w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-indigo-200">
+        </div>
+
+        <div>
+            <label class="block font-medium">Categoría:</label>
+            <input type="text" name="category" required
+                class="w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-indigo-200">
+        </div>
+
+
+        <div>
+            <label class="block font-medium">Thumbnails (URL):</label>
+            <input type="text" name="thumbnails"
+                class="w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-indigo-200">
+        </div>
+
+
+        <div>
+            <label class="block font-medium">Descuento (%):</label>
+            <input type="number" step="0.01" name="discount"
+                class="w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-indigo-200">
+        </div>
+
+
+        <div>
+            <label class="block font-medium">Estado:</label>
+            <select name="status" class="w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-indigo-200">
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+            </select>
+        </div>
+
+
+        <div>
+            <label class="block font-medium">Código:</label>
+            <input type="text" name="code" required
+                class="w-full border border-gray-300 p-2 rounded-lg focus:ring focus:ring-indigo-200">
+        </div>
+
+        <button type="submit"
+            class="w-full bg-indigo-600 text-white py-2 rounded-xl hover:bg-indigo-700 transition">
+            Guardar Producto
+        </button>
+    </form>
+
+</body>
+</html>

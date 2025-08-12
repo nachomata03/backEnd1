@@ -32,9 +32,7 @@ class CartsController {
         const cid = req.params.cid;
         try {
             const result = await cartsService.createProductToCart(cid, pid);
-            res.status(201).json({
-                message: 'Producto agregado correctamente',
-                cart: result});
+            res.redirect(`/api/view/${cid}`);
         } catch (error) {
             console.log(`Error al agregar el producto ${pid} al carrito ${cid}:`, error);
             const statusCode = error.statusCode || 500;
@@ -76,7 +74,7 @@ class CartsController {
         const cid = req.params.cid;
         try{
             const cart = await cartsService.deleteProductFromCart(cid, pid);
-            return res.status(200).json({ message: 'Producto eliminado del carrito', cart });
+            res.render('viewCart', {cart, title: 'Mi carrito'});
         }catch(error){
             console.log(`Error al eliminar el producto ${pid} del carrito ${cid}:`, error);
             const statusCode = error.statusCode || 500;
@@ -88,12 +86,24 @@ class CartsController {
     const cid = req.params.cid;
     try {
         const cart = await cartsService.cleanCart(cid);
-        return res.status(200).json({ message: 'Productos eliminados del carrito', cart });
+        res.render('viewCart', {cart, title: 'Mi carrito'});
     } catch (error) {
         console.log(`Error al eliminar los productos del carrito ${cid}:`, error);
         const statusCode = error.statusCode || 500;
         res.status(statusCode).json({ status: 'error', message: error.message });
     }
+    }
+
+    async getCartView(req, res) {
+        const id = req.params.cid;
+        try{
+            const cart = await cartsService.cartLean(id);
+            res.render('viewCart', {cart, title: 'Mi carrito'});
+        }catch(error){
+            console.log(`Error al obtener el carrito con el ID ${id}:`, error);
+            const statusCode = error.statusCode || 500;
+            res.status(statusCode).json({ status: 'error', message: error.message });
+        }
     }
 }
 

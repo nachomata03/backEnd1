@@ -1,14 +1,19 @@
 import {paginationService} from '../services/index.js';
 
 import { PaginationParameters } from 'mongoose-paginate-v2';
+import config from '../config/index.js';
+import userDto from '../dto/user.dto.js';
 
-const pathProd = "http://localhost:8080/api/all-products"
+const {PORT} = config
+
+const pathProd = `http://localhost:${PORT}/api/all-products`
 
 export default class PaginationController{
     async getProducts(req, res){
         const queries = new PaginationParameters(req).get()
         const paginationObject = queries[1] || {} 
         const {query} = req.query
+        const user = req.user.payload || req.user
         let sort;
     
         if(paginationObject.sort === 'asc') {
@@ -45,8 +50,8 @@ export default class PaginationController{
 
             let nextLink = null;
 
-            if(responseData.hasPrevPage) prevLink = `${pathProd}/?page=${responseData.prevPage}`
-            if(responseData.hasNextPage) nextLink = `${pathProd}/?page=${responseData.nextPage}`
+            if(responseData.hasPrevPage) prevLink = `${pathProd}?page=${responseData.prevPage}`
+            if(responseData.hasNextPage) nextLink = `${pathProd}?page=${responseData.nextPage}`
 
             delete responseData.offset;
             responseData.prevLink = prevLink
@@ -61,7 +66,8 @@ export default class PaginationController{
                 hasNextPage: responseData.hasNextPage, 
                 prevLink,
                 nextLink,
-                totalPages: responseData.totalPages
+                totalPages: responseData.totalPages, 
+                user
             })
         } catch (error) {
             console.log(error);

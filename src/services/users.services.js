@@ -92,4 +92,18 @@ export default class UsersService {
             throw error
         }
     }
+
+    async getUserByEmail(email){
+        try{
+            const user = await this.userRepository.getUserByEmail(email);
+            if(!user){
+                const error = new Error('Usuario no encontrado');
+                error.statusCode = 404;
+                throw error
+            }
+            return user;
+        }catch(error){
+            throw error
+        }
+    }
 }

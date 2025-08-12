@@ -41,8 +41,7 @@ async function verifyLogin (username, password, done){
         if(!user) return done(null, false, {message: 'Credenciales incorrectas'})
         const passwordOk = await isValidPassword(user, password)
         if(!passwordOk) return done(null, false, {message: 'Credenciales incorrectas'})
-        
-        /* const payload = {username: user.email, id: user._id, role: user.role, firstName: user.firstName, lastName: user.lastName}; */
+
         const payload = new userDto(user)
         const token = await generateToken(payload)
         if(!token) return done(null, false, {message: 'No se pudo generar el token'})

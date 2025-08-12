@@ -4,7 +4,7 @@ import { generateToken } from "../../utils.js";
 import CartModel from '../../repository/dao/mongo/models/Carts.models.js';
 import config from "../../config/index.js";
 
-const {GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET} = config;
+const {GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, FRONTEND_URL} = config;
 
 async function verifyGitHub (accessToken, refreshToken, profile, done) {
     console.log(`profile: ${JSON.stringify(profile, null, 2)}`);
@@ -64,7 +64,7 @@ async function verifyGitHub (accessToken, refreshToken, profile, done) {
 const github = new GitHubStrategy({
     clientID: GITHUB_CLIENT_ID,
     clientSecret: GITHUB_CLIENT_SECRET,
-    callbackURL: "http://localhost:8080/api/sessions/githubcallback",
+    callbackURL: `${FRONTEND_URL}/sessions/githubcallback`,
     scope: ['user:email']
 }, verifyGitHub);
 

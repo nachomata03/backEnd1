@@ -26,4 +26,12 @@ export default class CartsMongoRepository{
     async deleteCart(id){
         return await this.dao.deleteCart(id);
     }
+
+    async cleanCart(id){
+        return await this.dao.cleanCart(id);
+    }
+
+    async cartLean(id){
+        return await this.dao.cartLean(id);
+    }
 }

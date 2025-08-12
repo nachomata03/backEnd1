@@ -34,4 +34,12 @@ export default class CartsMongoDao{
     async deleteCart(id){
         return await CartsModel.deleteOne({ _id: id });
     }
+
+    async cleanCart(id){
+        return await CartsModel.updateOne({ _id: id }, { $set: { products: [] } });
+    }
+
+    async cartLean(id){
+        return await CartsModel.findById(id).populate('products.id').lean();
+    }
 }

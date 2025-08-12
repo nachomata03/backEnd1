@@ -7,7 +7,7 @@ export default class CartsService {
         try {
             const cart = await this.cartsRepository.getCart(id);
 
-            if (!cart){
+            if (!cart) {
                 const error = new Error('Carrito no encontrado');
                 error.statusCode = 404;
                 throw error;
@@ -17,7 +17,7 @@ export default class CartsService {
             throw error
         }
     }
-    async createCart(products){
+    async createCart(products) {
         try {
             const productsToInsert = [];
 
@@ -31,7 +31,7 @@ export default class CartsService {
                 }
 
                 productsToInsert.push({
-                    id: foundProduct._id? foundProduct._id : foundProduct.id, // Usar el _id de Mongoose como referencia
+                    id: foundProduct._id ? foundProduct._id : foundProduct.id, // Usar el _id de Mongoose como referencia
                     quantity: prod.quantity,
                 });
             }
@@ -40,7 +40,7 @@ export default class CartsService {
             throw error
         }
     }
-    async createProductToCart(cid, pid){
+    async createProductToCart(cid, pid) {
         try {
             const cart = await this.cartsRepository.getCart(cid)
             const product = await this.productsRepository.getProduct(pid)
@@ -55,7 +55,7 @@ export default class CartsService {
                 throw error
             }
             const productIndex = cart.products.findIndex(p => String(p.id) == String(product._id ? product._id : product.id)); //Compara objectIds
-            
+
             if (productIndex > -1) {
                 // El producto ya está en el carrito, aumentar la cantidad
                 cart.products[productIndex].quantity += 1;
@@ -71,21 +71,21 @@ export default class CartsService {
             throw error
         }
     }
-    async updateCart(id, products){
-        try{
+    async updateCart(id, products) {
+        try {
             const cart = await this.cartsRepository.getCart(id); //busca el carrito
-            
+
             if (!cart) {
                 const error = new Error('El carrito no existe');
                 error.statusCode = 404;
                 throw error
             }
             const productsToInsert = [];
-            for (const prod of products){
+            for (const prod of products) {
                 const foundProduct = await this.productsRepository.getProduct(prod.id);
-                
 
-                if (!foundProduct){
+
+                if (!foundProduct) {
                     const error = new Error(`No se encontró el producto con ID: ${prod.id}`);
                     error.statusCode = 400;
                     throw error
@@ -95,49 +95,17 @@ export default class CartsService {
                     quantity: prod.quantity,
                 });
 
-            } 
+            }
             cart.products = productsToInsert
             const cartSaved = this.cartsRepository.updateCart(cart);
             return cartSaved
-        }catch (error) {
+        } catch (error) {
             throw error
         }
     }
-    async updateProductFromCart(cid, pid, quantity){
+    async updateProductFromCart(cid, pid, quantity) {
         try {
 
-            const cart = await this.cartsRepository.getCart(cid); //busca el carrito
-            
-            if (!cart){
-                const error = new Error('El carrito no existe');
-                error.statusCode = 404;
-                throw error
-            }
-
-            const product = await this.productsRepository.getProduct(pid); //busca el producto
-
-            if (!product){
-                const error = new Error('El producto no existe');
-                error.statusCode = 404;
-                throw error
-            }
-            const productIndex = cart.products.findIndex(p => String(p.id) == String(pid)); //Compara objectIds
-            
-            if (productIndex > -1) {
-                cart.products[productIndex].quantity = quantity;
-                await this.cartsRepository.updateProductFromCart(cart, productIndex);
-            }else{
-                const error = new Error('El producto no existe en el carrito');
-                error.statusCode = 404;
-                throw error
-            }
-            return cart
-        }catch (error) {
-            throw error
-        }
-    }
-    async deleteProductFromCart(cid, pid){
-        try {
             const cart = await this.cartsRepository.getCart(cid); //busca el carrito
 
             if (!cart) {
@@ -145,7 +113,38 @@ export default class CartsService {
                 error.statusCode = 404;
                 throw error
             }
+
+            const product = await this.productsRepository.getProduct(pid); //busca el producto
+
+            if (!product) {
+                const error = new Error('El producto no existe');
+                error.statusCode = 404;
+                throw error
+            }
             const productIndex = cart.products.findIndex(p => String(p.id) == String(pid)); //Compara objectIds
+
+            if (productIndex > -1) {
+                cart.products[productIndex].quantity = quantity;
+                await this.cartsRepository.updateProductFromCart(cart, productIndex);
+            } else {
+                const error = new Error('El producto no existe en el carrito');
+                error.statusCode = 404;
+                throw error
+            }
+            return cart
+        } catch (error) {
+            throw error
+        }
+    }
+    async deleteProductFromCart(cid, pid) {
+        try {
+            const cart = await this.cartsRepository.getCart(cid); //busca el carrito
+            if (!cart) {
+                const error = new Error('El carrito no existe');
+                error.statusCode = 404;
+                throw error
+            }
+            const productIndex = cart.products.findIndex(p => String(p._id) == String(pid)); //Compara objectIds
 
             if (productIndex > -1) {
                 cart.products.splice(productIndex, 1);
@@ -156,11 +155,11 @@ export default class CartsService {
                 error.statusCode = 404;
                 throw error
             }
-        }catch (error) {
+        } catch (error) {
             throw error
         }
     }
-    async cleanCart(id){
+    async cleanCart(id) {
         try {
             const cart = await this.cartsRepository.getCart(id);
 
@@ -172,8 +171,41 @@ export default class CartsService {
 
             return await this.cartsRepository.cleanCart(id);
 
-        }catch (error) {
+        } catch (error) {
             throw error
+        }
+    }
+
+    async cartLean(id) {
+        try {
+            let cart = await this.cartsRepository.cartLean(id); // suponiendo que hace findById con populate y lean()
+
+            if (!cart) {
+                const error = new Error('Carrito no encontrado');
+                error.statusCode = 404;
+                throw error;
+            }
+
+            // Mapear productos agregando subTotal
+            cart.products = cart.products.map(item => {
+                const price = Number(item.id?.price) || 0;
+                const quantity = Number(item.quantity) || 0;
+                const subTotal = price * quantity;
+
+                return {
+                    ...item,         // copiamos el producto sin perder campos
+                    subTotal: subTotal.toFixed(2), // agregamos subTotal como string con 2 decimales
+                };
+            });
+
+            // Calcular totalPrice sumando todos los subTotal
+            const total = cart.products.reduce((acc, item) => acc + parseFloat(item.subTotal), 0);
+            cart.totalPrice = total.toFixed(2);
+
+            return cart;
+
+        } catch (error) {
+            throw error;
         }
     }
 }
